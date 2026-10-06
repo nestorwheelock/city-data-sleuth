@@ -181,6 +181,24 @@ def build():
     t = analysis.get("turnaround", {})
     median = t.get("median", "–")
 
+    # copy static assets (plat, review-flow chart, etc.) into docs/assets/
+    adir, ddir = os.path.join(CONTENT, "assets"), os.path.join(DOCS, "assets")
+    flow_imgs = []
+    if os.path.isdir(adir):
+        os.makedirs(ddir, exist_ok=True)
+        for fn in sorted(os.listdir(adir)):
+            shutil.copy(os.path.join(adir, fn), os.path.join(ddir, fn))
+            if fn.startswith("review-flow") and fn.lower().endswith((".png",".jpg",".jpeg",".webp")):
+                flow_imgs.append(fn)
+    flow_fig = ""
+    if flow_imgs:
+        imgs = "".join(f'<img src="assets/{e(f)}" alt="BPS parcel/survey review-flow comparison" '
+                       f'style="width:100%;border:1px solid var(--grid);border-radius:8px;margin:6px 0">'
+                       for f in flow_imgs)
+        flow_fig = (f'<figure style="margin:0">{imgs}<figcaption class="note">Per-department review '
+                    f'flow — the subject case (BPS26-0517) against comparable cases, in calendar days '
+                    f'from Department Reviews start. Source: City case-check pages.</figcaption></figure>')
+
     # ---- index / story
     hero = f"""<h1>A permit stalled. The City's own records show how unusual that is.</h1>
 <p class="lede">Small property-line changes all run through the same St. Louis review. Using the
@@ -203,6 +221,7 @@ flow every month. (Board-approval dates, from the public minutes.)</p>
 <h2>How Building review compares</h2>
 <p>For cases where both dates are public, Building review runs from a few days to about four
 weeks. The one case that took as long as BPS26-0517 carried a documented deficiency — this one shows none.</p>
+{f'<div class="card">{flow_fig}</div>' if flow_fig else ''}
 <div class="card">{bar_h(srows)}</div>
 <p class="note">Small, non-random sample (n={t.get('n','?')}); the population distribution needs the City's
 workflow data, requested via public records. See <a href="methods.html">Methods</a>.</p>
@@ -225,6 +244,7 @@ deficiency, while {analysis['total']} comparable matters moved through. <a href=
 </tbody></table></div>
 <div class="callout crit"><span style="font-size:26px;font-weight:800;color:var(--crit)">27 days pending</span><br>
 Building shows no deficiency and no assigned date, while every other department finished by Sept 15.</div>
+{f'<h2>Compared to similar cases</h2><div class="card">{flow_fig}</div>' if flow_fig else ''}
 <p><a class="btn" href="exhibits.html">See the exhibits →</a></p>"""
     write("case.html", shell("The case", "case.html", case_body))
 

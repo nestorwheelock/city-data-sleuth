@@ -368,7 +368,7 @@ def main(argv=None):
 
 if __name__ == &quot;__main__&quot;:
     main()
-</code></pre></details><details><summary>src/make_site.py — 325 lines</summary><pre><code>#!/usr/bin/env python3
+</code></pre></details><details><summary>src/make_site.py — 345 lines</summary><pre><code>#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # City Data Sleuth — multi-page static site generator.
 # Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
@@ -551,6 +551,24 @@ def build():
     t = analysis.get(&quot;turnaround&quot;, {})
     median = t.get(&quot;median&quot;, &quot;–&quot;)
 
+    # copy static assets (plat, review-flow chart, etc.) into docs/assets/
+    adir, ddir = os.path.join(CONTENT, &quot;assets&quot;), os.path.join(DOCS, &quot;assets&quot;)
+    flow_imgs = []
+    if os.path.isdir(adir):
+        os.makedirs(ddir, exist_ok=True)
+        for fn in sorted(os.listdir(adir)):
+            shutil.copy(os.path.join(adir, fn), os.path.join(ddir, fn))
+            if fn.startswith(&quot;review-flow&quot;) and fn.lower().endswith((&quot;.png&quot;,&quot;.jpg&quot;,&quot;.jpeg&quot;,&quot;.webp&quot;)):
+                flow_imgs.append(fn)
+    flow_fig = &quot;&quot;
+    if flow_imgs:
+        imgs = &quot;&quot;.join(f&#x27;&lt;img src=&quot;assets/{e(f)}&quot; alt=&quot;BPS parcel/survey review-flow comparison&quot; &#x27;
+                       f&#x27;style=&quot;width:100%;border:1px solid var(--grid);border-radius:8px;margin:6px 0&quot;&gt;&#x27;
+                       for f in flow_imgs)
+        flow_fig = (f&#x27;&lt;figure style=&quot;margin:0&quot;&gt;{imgs}&lt;figcaption class=&quot;note&quot;&gt;Per-department review &#x27;
+                    f&#x27;flow — the subject case (BPS26-0517) against comparable cases, in calendar days &#x27;
+                    f&#x27;from Department Reviews start. Source: City case-check pages.&lt;/figcaption&gt;&lt;/figure&gt;&#x27;)
+
     # ---- index / story
     hero = f&quot;&quot;&quot;&lt;h1&gt;A permit stalled. The City&#x27;s own records show how unusual that is.&lt;/h1&gt;
 &lt;p class=&quot;lede&quot;&gt;Small property-line changes all run through the same St. Louis review. Using the
@@ -573,6 +591,7 @@ flow every month. (Board-approval dates, from the public minutes.)&lt;/p&gt;
 &lt;h2&gt;How Building review compares&lt;/h2&gt;
 &lt;p&gt;For cases where both dates are public, Building review runs from a few days to about four
 weeks. The one case that took as long as BPS26-0517 carried a documented deficiency — this one shows none.&lt;/p&gt;
+{f&#x27;&lt;div class=&quot;card&quot;&gt;{flow_fig}&lt;/div&gt;&#x27; if flow_fig else &#x27;&#x27;}
 &lt;div class=&quot;card&quot;&gt;{bar_h(srows)}&lt;/div&gt;
 &lt;p class=&quot;note&quot;&gt;Small, non-random sample (n={t.get(&#x27;n&#x27;,&#x27;?&#x27;)}); the population distribution needs the City&#x27;s
 workflow data, requested via public records. See &lt;a href=&quot;methods.html&quot;&gt;Methods&lt;/a&gt;.&lt;/p&gt;
@@ -595,6 +614,7 @@ deficiency, while {analysis[&#x27;total&#x27;]} comparable matters moved through
 &lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;div class=&quot;callout crit&quot;&gt;&lt;span style=&quot;font-size:26px;font-weight:800;color:var(--crit)&quot;&gt;27 days pending&lt;/span&gt;&lt;br&gt;
 Building shows no deficiency and no assigned date, while every other department finished by Sept 15.&lt;/div&gt;
+{f&#x27;&lt;h2&gt;Compared to similar cases&lt;/h2&gt;&lt;div class=&quot;card&quot;&gt;{flow_fig}&lt;/div&gt;&#x27; if flow_fig else &#x27;&#x27;}
 &lt;p&gt;&lt;a class=&quot;btn&quot; href=&quot;exhibits.html&quot;&gt;See the exhibits →&lt;/a&gt;&lt;/p&gt;&quot;&quot;&quot;
     write(&quot;case.html&quot;, shell(&quot;The case&quot;, &quot;case.html&quot;, case_body))
 

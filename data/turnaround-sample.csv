@@ -1,0 +1,11 @@
+case,days,deficiency,pending,source,note
+BPS26-0185,3,0,0,case-check,approved
+BPS26-0004,5,0,0,case-check,approved
+BPS26-0174,8,0,0,case-check,approved
+BPS26-0121,14,0,0,case-check,board-denied (did not meet lot criteria)
+BPS26-0173,15,0,0,case-check,board-denied
+BPS26-0163,16,0,0,case-check,approved
+BPS25-0412,18,1,0,case-check,documented zoning objection
+BPS25-0622,24,1,0,case-check,discrepancy + revised plat
+BPS26-0026,29,1,0,case-check,substantially deficient; resubmissions
+BPS26-0517,27,0,1,case-check,SUBJECT — still pending, no decision

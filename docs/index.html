@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A permit stalled — City Data Sleuth</title>
+<style>:root{--s:#fcfcfb;--pg:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;--grid:#e1e0d9;--base:#c3c2b7;--ser:#2a78d6;--crit:#d03b3b;}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--pg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
+header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--grid)}
+.nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand span{color:var(--ser)}
+.nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
+main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
+.hero{max-width:960px;margin:0 auto;padding:54px 20px 20px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.02em;margin:.1em 0}
+h2{font-size:23px;margin:1.9em 0 .5em;letter-spacing:-.01em}
+h3{font-size:18px;margin:1.4em 0 .4em}
+.lede{font-size:20px;color:var(--ink2);max-width:40em}
+.tiles{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.tile{flex:1 1 160px;background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:16px 18px}
+.tile .n{font-size:30px;font-weight:800;letter-spacing:-.02em} .tile .n.crit{color:var(--crit)}
+.tile .l{font-size:13px;color:var(--ink2);margin-top:2px}
+.card{background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:18px 20px;margin:16px 0}
+.chart{width:100%;height:auto;font-family:system-ui,sans-serif}
+.step{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink2)}
+.step b{background:var(--s);border:1px solid var(--grid);border-radius:999px;padding:5px 12px;color:var(--ink)}
+.callout{border-left:4px solid var(--ser);background:var(--s);padding:12px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+.callout.crit{border-color:var(--crit)}
+blockquote{border-left:3px solid var(--base);margin:12px 0;padding:6px 16px;color:var(--ink2);background:var(--s);border-radius:0 8px 8px 0}
+ul,ol{padding-left:22px} li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{position:sticky;top:0;background:var(--s);cursor:pointer;white-space:nowrap}
+.wrap{max-height:520px;overflow:auto;border:1px solid var(--grid);border-radius:10px}
+.note{font-size:13px;color:var(--mut)}
+.btn{display:inline-block;background:var(--ser);color:#fff;padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px}
+.btn:hover{text-decoration:none;filter:brightness(.95)}
+input.filter{width:100%;padding:9px 12px;border:1px solid var(--grid);border-radius:8px;margin:0 0 10px;font-size:14px}
+details{margin:10px 0;border:1px solid var(--grid);border-radius:10px;background:var(--s);padding:4px 12px}
+summary{cursor:pointer;font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+pre{overflow:auto;background:#0b0b0b;color:#e6e6e6;padding:14px;border-radius:8px;
+ font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;max-height:620px}
+pre code{background:none;color:inherit;padding:0}
+code{background:#eee;padding:1px 5px;border-radius:4px;font-size:.92em}
+footer{border-top:1px solid var(--grid);margin-top:50px}
+.foot-in{max-width:960px;margin:0 auto;padding:22px 20px;color:var(--mut);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(max-width:560px){h1{font-size:30px}}
+</style></head><body>
+<header class="nav"><div class="nav-in"><a class="brand" href="index.html">City Data <span>Sleuth</span></a><a href="index.html" class="on">Story</a><a href="case.html" class="">The case</a><a href="data.html" class="">The data</a><a href="exhibits.html" class="">Exhibits</a><a href="records-request.html" class="">Records requests</a><a href="methods.html" class="">Methods &amp; code</a><a href="reuse.html" class="">Use it yourself</a></div></header>
+<section class="hero"><h1>A permit stalled. The City's own records show how unusual that is.</h1>
+<p class="lede">Small property-line changes all run through the same St. Louis review. Using the
+City's published board minutes and permit-status system, this is what that process looks
+like across 2026 — and one application that simply stopped.</p>
+<div class="tiles">
+<div class="tile"><div class="n">57</div><div class="l">parcel/survey matters charted (2026)</div></div>
+<div class="tile"><div class="n">~15 days</div><div class="l">median Building review (public sample)</div></div>
+<div class="tile"><div class="n crit">27 days+</div><div class="l">case BPS26-0517, still pending</div></div>
+</div></section><main>
+<h2>The process</h2>
+<p>Every parcel/survey permit passes through these reviews before the Board approves it:</p>
+<div class="card"><div class="step"><b>1 · BPS Survey</b>→<b>2 · Water</b>→<b>3 · Assessor</b>→
+<b>4 · Building (Public Safety)</b>→<b>5 · Board approval</b></div></div>
+<h2>How many clear, and when</h2>
+<p>In 2026 the Board approved <strong>57</strong> parcel/survey matters — a steady
+flow every month. (Board-approval dates, from the public minutes.)</p>
+<div class="card"><svg viewBox="0 0 640 260" role="img" aria-label="Approvals per month" class="chart"><line x1="36" y1="224.0" x2="604" y2="224.0" stroke="#e1e0d9"/><text x="30" y="228.0" text-anchor="end" fill="#898781" font-size="11">0</text><line x1="36" y1="186.4" x2="604" y2="186.4" stroke="#e1e0d9"/><text x="30" y="190.4" text-anchor="end" fill="#898781" font-size="11">2</text><line x1="36" y1="148.8" x2="604" y2="148.8" stroke="#e1e0d9"/><text x="30" y="152.8" text-anchor="end" fill="#898781" font-size="11">4</text><line x1="36" y1="111.2" x2="604" y2="111.2" stroke="#e1e0d9"/><text x="30" y="115.2" text-anchor="end" fill="#898781" font-size="11">6</text><line x1="36" y1="73.6" x2="604" y2="73.6" stroke="#e1e0d9"/><text x="30" y="77.6" text-anchor="end" fill="#898781" font-size="11">8</text><line x1="36" y1="36.0" x2="604" y2="36.0" stroke="#e1e0d9"/><text x="30" y="40.0" text-anchor="end" fill="#898781" font-size="11">10</text><rect x="47.4" y="186.4" width="40.4" height="37.6" rx="4" fill="#2a78d6"><title>Jan: 2</title></rect><text x="67.6" y="180.4" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">2</text><text x="67.6" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Jan</text><rect x="110.5" y="73.6" width="40.4" height="150.4" rx="4" fill="#2a78d6"><title>Feb: 8</title></rect><text x="130.7" y="67.6" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">8</text><text x="130.7" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Feb</text><rect x="173.6" y="111.2" width="40.4" height="112.8" rx="4" fill="#2a78d6"><title>Mar: 6</title></rect><text x="193.8" y="105.2" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">6</text><text x="193.8" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Mar</text><rect x="236.7" y="36.0" width="40.4" height="188.0" rx="4" fill="#2a78d6"><title>Apr: 10</title></rect><text x="256.9" y="30.0" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">10</text><text x="256.9" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Apr</text><rect x="299.8" y="148.8" width="40.4" height="75.2" rx="4" fill="#2a78d6"><title>May: 4</title></rect><text x="320.0" y="142.8" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">4</text><text x="320.0" y="240.0" text-anchor="middle" fill="#898781" font-size="11">May</text><rect x="362.9" y="73.6" width="40.4" height="150.4" rx="4" fill="#2a78d6"><title>Jun: 8</title></rect><text x="383.1" y="67.6" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">8</text><text x="383.1" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Jun</text><rect x="426.0" y="54.8" width="40.4" height="169.2" rx="4" fill="#2a78d6"><title>Jul: 9</title></rect><text x="446.2" y="48.8" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">9</text><text x="446.2" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Jul</text><rect x="489.1" y="148.8" width="40.4" height="75.2" rx="4" fill="#2a78d6"><title>Aug: 4</title></rect><text x="509.3" y="142.8" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">4</text><text x="509.3" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Aug</text><rect x="552.2" y="111.2" width="40.4" height="112.8" rx="4" fill="#2a78d6"><title>Sep: 6</title></rect><text x="572.4" y="105.2" text-anchor="middle" fill="#52514e" font-size="12" font-weight="600">6</text><text x="572.4" y="240.0" text-anchor="middle" fill="#898781" font-size="11">Sep</text><line x1="36" y1="224" x2="604" y2="224" stroke="#c3c2b7"/></svg></div>
+<h2>How Building review compares</h2>
+<p>For cases where both dates are public, Building review runs from a few days to about four
+weeks. The one case that took as long as BPS26-0517 carried a documented deficiency — this one shows none.</p>
+<div class="card"><svg viewBox="0 0 640 296" role="img" aria-label="Building-review days per case" class="chart"><text x="110" y="22" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0185</text><rect x="118" y="8" width="38.5" height="19" rx="4" fill="#2a78d6"><title>BPS26-0185: 3 days</title></rect><text x="162.5" y="22" fill="#52514e" font-size="12" font-weight="400">3 days</text><text x="110" y="50" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0004</text><rect x="118" y="36" width="64.1" height="19" rx="4" fill="#2a78d6"><title>BPS26-0004: 5 days</title></rect><text x="188.1" y="50" fill="#52514e" font-size="12" font-weight="400">5 days</text><text x="110" y="78" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0174</text><rect x="118" y="64" width="102.6" height="19" rx="4" fill="#2a78d6"><title>BPS26-0174: 8 days</title></rect><text x="226.6" y="78" fill="#52514e" font-size="12" font-weight="400">8 days</text><text x="110" y="106" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0121</text><rect x="118" y="92" width="179.6" height="19" rx="4" fill="#2a78d6"><title>BPS26-0121: 14 days</title></rect><text x="303.6" y="106" fill="#52514e" font-size="12" font-weight="400">14 days</text><text x="110" y="134" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0173</text><rect x="118" y="120" width="192.4" height="19" rx="4" fill="#2a78d6"><title>BPS26-0173: 15 days</title></rect><text x="316.4" y="134" fill="#52514e" font-size="12" font-weight="400">15 days</text><text x="110" y="162" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0163</text><rect x="118" y="148" width="205.2" height="19" rx="4" fill="#2a78d6"><title>BPS26-0163: 16 days</title></rect><text x="329.2" y="162" fill="#52514e" font-size="12" font-weight="400">16 days</text><text x="110" y="190" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS25-0412</text><rect x="118" y="176" width="230.9" height="19" rx="4" fill="#2a78d6"><title>BPS25-0412: 18 days</title></rect><text x="354.9" y="190" fill="#52514e" font-size="12" font-weight="400">18 days — had a deficiency</text><text x="110" y="218" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS25-0622</text><rect x="118" y="204" width="307.9" height="19" rx="4" fill="#2a78d6"><title>BPS25-0622: 24 days</title></rect><text x="431.9" y="218" fill="#52514e" font-size="12" font-weight="400">24 days — had a deficiency</text><text x="110" y="246" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0026</text><rect x="118" y="232" width="372.0" height="19" rx="4" fill="#2a78d6"><title>BPS26-0026: 29 days</title></rect><text x="496.0" y="246" fill="#52514e" font-size="12" font-weight="400">29 days — had a deficiency</text><text x="110" y="274" text-anchor="end" fill="#52514e" font-size="12" style="font-variant-numeric:tabular-nums">BPS26-0517</text><rect x="118" y="260" width="346.3" height="19" rx="4" fill="#d03b3b"><title>BPS26-0517: 27 days</title></rect><text x="470.3" y="274" fill="#d03b3b" font-size="12" font-weight="700">27 days — pending, no decision</text></svg></div>
+<p class="note">Small, non-random sample (n=9); the population distribution needs the City's
+workflow data, requested via public records. See <a href="methods.html">Methods</a>.</p>
+<div class="callout crit"><strong>The case in one line:</strong> every other department cleared
+BPS26-0517 by Sept 15; Building has sat with <strong>no date assigned</strong> and no stated
+deficiency, while 57 comparable matters moved through. <a href="case.html">See the case →</a></div>
+</main>
+<footer><div class="foot-in">
+<span>Built from public records with open-source code.</span>
+<span><a href="https://github.com/nestorwheelock/city-data-sleuth">Source on GitHub</a></span>
+<span>Licensed GNU GPL v3</span><span>Not legal advice.</span>
+</div></footer></body></html>

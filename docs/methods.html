@@ -1,0 +1,849 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Methods &amp; code — City Data Sleuth</title>
+<style>:root{--s:#fcfcfb;--pg:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;--grid:#e1e0d9;--base:#c3c2b7;--ser:#2a78d6;--crit:#d03b3b;}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--pg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
+header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--grid)}
+.nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand span{color:var(--ser)}
+.nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
+main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
+.hero{max-width:960px;margin:0 auto;padding:54px 20px 20px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.02em;margin:.1em 0}
+h2{font-size:23px;margin:1.9em 0 .5em;letter-spacing:-.01em}
+h3{font-size:18px;margin:1.4em 0 .4em}
+.lede{font-size:20px;color:var(--ink2);max-width:40em}
+.tiles{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.tile{flex:1 1 160px;background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:16px 18px}
+.tile .n{font-size:30px;font-weight:800;letter-spacing:-.02em} .tile .n.crit{color:var(--crit)}
+.tile .l{font-size:13px;color:var(--ink2);margin-top:2px}
+.card{background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:18px 20px;margin:16px 0}
+.chart{width:100%;height:auto;font-family:system-ui,sans-serif}
+.step{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink2)}
+.step b{background:var(--s);border:1px solid var(--grid);border-radius:999px;padding:5px 12px;color:var(--ink)}
+.callout{border-left:4px solid var(--ser);background:var(--s);padding:12px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+.callout.crit{border-color:var(--crit)}
+blockquote{border-left:3px solid var(--base);margin:12px 0;padding:6px 16px;color:var(--ink2);background:var(--s);border-radius:0 8px 8px 0}
+ul,ol{padding-left:22px} li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{position:sticky;top:0;background:var(--s);cursor:pointer;white-space:nowrap}
+.wrap{max-height:520px;overflow:auto;border:1px solid var(--grid);border-radius:10px}
+.note{font-size:13px;color:var(--mut)}
+.btn{display:inline-block;background:var(--ser);color:#fff;padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px}
+.btn:hover{text-decoration:none;filter:brightness(.95)}
+input.filter{width:100%;padding:9px 12px;border:1px solid var(--grid);border-radius:8px;margin:0 0 10px;font-size:14px}
+details{margin:10px 0;border:1px solid var(--grid);border-radius:10px;background:var(--s);padding:4px 12px}
+summary{cursor:pointer;font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+pre{overflow:auto;background:#0b0b0b;color:#e6e6e6;padding:14px;border-radius:8px;
+ font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;max-height:620px}
+pre code{background:none;color:inherit;padding:0}
+code{background:#eee;padding:1px 5px;border-radius:4px;font-size:.92em}
+footer{border-top:1px solid var(--grid);margin-top:50px}
+.foot-in{max-width:960px;margin:0 auto;padding:22px 20px;color:var(--mut);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(max-width:560px){h1{font-size:30px}}
+</style></head><body>
+<header class="nav"><div class="nav-in"><a class="brand" href="index.html">City Data <span>Sleuth</span></a><a href="index.html" class="">Story</a><a href="case.html" class="">The case</a><a href="data.html" class="">The data</a><a href="exhibits.html" class="">Exhibits</a><a href="records-request.html" class="">Records requests</a><a href="methods.html" class="on">Methods &amp; code</a><a href="reuse.html" class="">Use it yourself</a></div></header>
+<main><h1>Methods &amp; code</h1>
+<p>Everything that produced this site, released under the GNU GPL v3. Copy it, run it, check it.</p>
+<h2>Pipeline</h2>
+<ol>
+<li><b>fetch</b> — download each weekly minutes PDF, verify it, extract text, write a SHA-256 manifest.</li>
+<li><b>extract</b> — parse the minutes text into a parcel/survey roster (keyword + case-number rules).</li>
+<li><b>analyze</b> — monthly cadence; turnaround from a documented public sample.</li>
+<li><b>verify</b> — re-extract and diff against the reviewed roster (last run: exact match).</li>
+<li><b>site</b> — this generator renders the pages you're reading.</li>
+</ol>
+<h2>What the data can and cannot show</h2>
+<p>The minutes give <b>one date per case</b> (board approval), not the per-step review clock. Turnaround
+exists only on the public case pages; the sample here is small and non-random. The population-wide
+distribution requires the City's workflow timestamps — requested via public records (see
+<a href="records-request.html">the guide</a>).</p>
+<h2>The source code</h2>
+<details><summary>src/bps_pipeline.py — 305 lines</summary><pre><code>#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
+&quot;&quot;&quot;
+bps_pipeline.py — reproducible analysis of St. Louis Board of Public Service (BPS)
+&quot;Parcel and Survey&quot; permits, built entirely from public records.
+
+Stages (run as subcommands):
+    fetch     download the weekly BPS meeting-minutes PDFs + SHA-256 manifest
+    extract   parse the minutes text -&gt; parcel/survey roster (CSV)
+    analyze   roster -&gt; cadence counts + turnaround distribution (reads a documented sample)
+    verify    compare a fresh extract against a reviewed roster (reproducibility check)
+    site      render a self-contained static HTML page from roster + analysis
+    all       extract + analyze + site
+
+Data sources (both public):
+  - BPS weekly board-meeting minutes (PDFs published by the City)
+  - the City case-check system (per-case review dates), used only for the turnaround
+    sample and only where a page is already public.
+
+Dependencies: Python 3.9+ stdlib, plus the `pdftotext` binary (poppler-utils) for `fetch`.
+Nothing here requires network except `fetch`.
+&quot;&quot;&quot;
+from __future__ import annotations
+import argparse, csv, datetime, glob, hashlib, html, os, re, statistics, subprocess, sys
+from collections import Counter
+
+# --------------------------------------------------------------------------- config
+MONTHS = [&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,
+          &quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]
+BASE_URL = (&quot;https://www.stlouis-mo.gov/government/departments/public-service/&quot;
+            &quot;documents/upload&quot;)
+
+# Palette (dataviz reference instance): single blue for magnitude; reserved red for the
+# one highlighted case, always accompanied by a text label (never color alone).
+PAL = dict(surface=&quot;#fcfcfb&quot;, page=&quot;#f9f9f7&quot;, ink=&quot;#0b0b0b&quot;, ink2=&quot;#52514e&quot;,
+           muted=&quot;#898781&quot;, grid=&quot;#e1e0d9&quot;, base=&quot;#c3c2b7&quot;, series=&quot;#2a78d6&quot;,
+           crit=&quot;#d03b3b&quot;)
+
+# A property-boundary-change (parcel/survey) matter. Phrase-based, not bare words:
+# &quot;boundary&quot;/&quot;property line&quot; must appear in an ADJUSTMENT context, so geographic uses
+# (&quot;trash receptacles within the CID boundary&quot;, &quot;fence along the property line&quot;) don&#x27;t match.
+PARCEL_RE = re.compile(r&quot;&quot;&quot;
+      consolidat
+    | subdivi | re-?subdivi
+    | \blot\s+split\b | \bparcel\s+split\b
+    | (?:divide|split)\s+the\s+existing\s+(?:lot|parcel)
+    | into\s+\w+\s+new\s+(?:parcels|lots)
+    | boundary\s+adjustment | adjust\w*\s+the\s+boundary | boundary/property\s*line
+    | property\s*line\s+adjustment | adjust\w*\s+the\s+property\s*line
+    | fee\s+simple
+    | \bplat\b
+&quot;&quot;&quot;, re.I | re.X)
+
+ITEM_RE = re.compile(r&quot;\b(30[6-9]\d{3})\b&quot;)                 # 6-digit board item number
+BPS_RE  = re.compile(r&quot;\b(BPS\d{2}-\d{4})\b&quot;)               # case number
+CB_RE   = re.compile(r&quot;C\.?\s*B\.?\s*&quot;
+                     r&quot;([0-9]{1,4}(?:[-–][0-9A-Za-z]+)?&quot;
+                     r&quot;(?:\s*(?:&amp;|and|,|E\.?|W\.?)\s*[0-9A-Za-z\-]+)*)&quot;)
+APPLICANT_RE = re.compile(r&quot;(?:Request\s+(?:submitted\s+)?by|submitted\s+by)\s+(.+?)&quot;
+                          r&quot;\s+(?:to\b|for\b|requesting\b)&quot;, re.I)
+HEADER_RE = re.compile(r&quot;^[ \t]*[A-Z][A-Z &amp;/,\.]{6,}$&quot;)
+
+TYPE_RULES = [  # (regex, canonical label)  -- order matters, first match wins
+    (r&quot;re-?subdivi&quot;, &quot;re-subdivision&quot;),
+    (r&quot;consolidat&quot;, &quot;consolidation&quot;),
+    (r&quot;divide\s+the\s+existing\s+lot|into\s+\w+\s+new\s+lots&quot;, &quot;subdivision&quot;),
+    (r&quot;split\s+the\s+existing\s+parcel|\bparcel\s+split\b|into\s+\w+\s+new\s+parcels&quot;, &quot;parcel split&quot;),
+    (r&quot;subdivi&quot;, &quot;subdivision&quot;),
+    (r&quot;\blot\s+split\b&quot;, &quot;lot split&quot;),
+    (r&quot;boundary\s+adjustment|adjust\w*\s+the\s+boundary|boundary/property&quot;, &quot;boundary adjustment&quot;),
+    (r&quot;property\s*line\s+adjustment|adjust\w*\s+the\s+property&quot;, &quot;property line adjustment&quot;),
+    (r&quot;fee\s+simple&quot;, &quot;subdivision&quot;),
+    (r&quot;\bplat\b&quot;, &quot;plat&quot;),
+]
+
+# --------------------------------------------------------------------------- helpers
+def tuesdays(year: int):
+    &quot;&quot;&quot;Every Tuesday of `year` as (MonthName, day).&quot;&quot;&quot;
+    d = datetime.date(year, 1, 1)
+    d += datetime.timedelta(days=(1 - d.weekday()) % 7)      # first Tuesday
+    while d.year == year:
+        yield MONTHS[d.month - 1], d.day
+        d += datetime.timedelta(days=7)
+
+def classify(block: str):
+    &quot;&quot;&quot;Return a roster dict for a minutes item block, or None if not parcel/survey.&quot;&quot;&quot;
+    if not PARCEL_RE.search(block):
+        return None
+    mitem, mbps = ITEM_RE.search(block), BPS_RE.search(block)
+    if not (mitem and mbps):
+        return None
+    excerpt = re.sub(r&quot;\s+&quot;, &quot; &quot;, block).strip()
+    mapp = APPLICANT_RE.search(excerpt)
+    applicant = mapp.group(1).strip().rstrip(&quot;,&quot;) if mapp else &quot;&quot;
+    mcb = CB_RE.search(excerpt)
+    typ = next((lab for pat, lab in TYPE_RULES if re.search(pat, excerpt, re.I)), &quot;parcel/survey&quot;)
+    maddr = re.search(r&quot;\b(?:at|located at)\s+(.+?)(?:,?\s+in\s+C\.?\s*B\.?|\.\s*$|$)&quot;,
+                      excerpt, re.I)
+    address = maddr.group(1).strip().rstrip(&quot;.&quot;) if maddr else &quot;&quot;
+    return dict(item_no=mitem.group(1), bps_no=mbps.group(1), applicant=applicant,
+                address=address, city_block=(mcb.group(1).strip().rstrip(&quot;.&quot;) if mcb else &quot;&quot;),
+                type=typ, excerpt=excerpt)
+
+def iter_item_blocks(text: str):
+    &quot;&quot;&quot;Split a minutes text into (item_no, block) spans at each board item number.&quot;&quot;&quot;
+    starts = [(m.start(), m.group(1)) for m in ITEM_RE.finditer(text)]
+    for i, (pos, item) in enumerate(starts):
+        end = starts[i + 1][0] if i + 1 &lt; len(starts) else len(text)
+        yield item, text[pos:end]
+
+def date_from_filename(path: str):
+    m = re.search(r&quot;BPS-Minutes-([A-Za-z]+)-(\d{1,2})-(\d{4})&quot;, os.path.basename(path))
+    if not m:
+        return &quot;&quot;
+    mon = MONTHS.index(m.group(1)) + 1
+    return f&quot;{m.group(3)}-{mon:02d}-{int(m.group(2)):02d}&quot;
+
+def version_from_filename(path: str):
+    return &quot;Preliminary&quot; if &quot;Preliminary&quot; in path else &quot;Approved&quot;
+
+# --------------------------------------------------------------------------- stages
+def fetch(minutes_dir: str, year: int):
+    &quot;&quot;&quot;Download minutes PDFs (Approved, else Preliminary), text, and a SHA-256 manifest.&quot;&quot;&quot;
+    import urllib.request, urllib.error
+    os.makedirs(minutes_dir, exist_ok=True)
+    got = missing = 0
+    for mon, day in tuesdays(year):
+        stem = f&quot;BPS-Minutes-{mon}-{day}-{year}&quot;
+        if glob.glob(os.path.join(minutes_dir, f&quot;{stem}-*.pdf&quot;)):
+            got += 1; continue
+        ok = None
+        for ver in (&quot;Approved&quot;, &quot;Preliminary&quot;):
+            url, out = f&quot;{BASE_URL}/{stem}-{ver}.pdf&quot;, os.path.join(minutes_dir, f&quot;{stem}-{ver}.pdf&quot;)
+            try:
+                with urllib.request.urlopen(url, timeout=60) as r:
+                    data = r.read()
+                if data[:4] == b&quot;%PDF&quot;:
+                    open(out, &quot;wb&quot;).write(data); ok = ver; break
+            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError):
+                pass
+        print(f&quot;{&#x27;GOT &#x27; if ok else &#x27;MISS&#x27;} {stem}{f&#x27; [{ok}]&#x27; if ok else &#x27;&#x27;}&quot;)
+        got += bool(ok); missing += (not ok)
+    for pdf in glob.glob(os.path.join(minutes_dir, &quot;*.pdf&quot;)):          # text sidecars
+        txt = pdf[:-4] + &quot;.txt&quot;
+        if not os.path.exists(txt):
+            subprocess.run([&quot;pdftotext&quot;, &quot;-layout&quot;, pdf, txt], check=True)
+    manifest = os.path.join(minutes_dir, &quot;MANIFEST.sha256&quot;)            # integrity
+    with open(manifest, &quot;w&quot;) as mf:
+        for pdf in sorted(glob.glob(os.path.join(minutes_dir, &quot;*.pdf&quot;))):
+            h = hashlib.sha256(open(pdf, &quot;rb&quot;).read()).hexdigest()
+            mf.write(f&quot;{h}  {os.path.basename(pdf)}\n&quot;)
+    print(f&quot;--- have {got}, missing {missing}; manifest -&gt; {manifest}&quot;)
+
+def extract(minutes_dir: str, out_csv: str):
+    &quot;&quot;&quot;Parse every minutes .txt into a parcel/survey roster CSV.&quot;&quot;&quot;
+    rows = []
+    for txt in sorted(glob.glob(os.path.join(minutes_dir, &quot;*.txt&quot;))):
+        date, ver, body = date_from_filename(txt), version_from_filename(txt), open(txt, encoding=&quot;utf-8&quot;, errors=&quot;replace&quot;).read()
+        for _item, block in iter_item_blocks(body):
+            rec = classify(block)
+            if rec:
+                rec[&quot;meeting_date&quot;], rec[&quot;minutes_version&quot;] = date, ver
+                rows.append(rec)
+    rows = dedupe(rows)
+    cols = [&quot;meeting_date&quot;,&quot;item_no&quot;,&quot;bps_no&quot;,&quot;applicant&quot;,&quot;address&quot;,&quot;city_block&quot;,
+            &quot;type&quot;,&quot;minutes_version&quot;,&quot;excerpt&quot;]
+    with open(out_csv, &quot;w&quot;, newline=&quot;&quot;) as f:
+        w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
+    print(f&quot;extracted {len(rows)} parcel/survey matters -&gt; {out_csv}&quot;)
+    return rows
+
+def dedupe(rows):
+    seen, out = set(), []
+    for r in sorted(rows, key=lambda x: (x[&quot;meeting_date&quot;], x[&quot;item_no&quot;])):
+        if r[&quot;item_no&quot;] in seen: continue
+        seen.add(r[&quot;item_no&quot;]); out.append(r)
+    return out
+
+def analyze(roster_csv: str, sample_csv: str | None = None):
+    rows = list(csv.DictReader(open(roster_csv, newline=&quot;&quot;)))
+    cadence = Counter(r[&quot;meeting_date&quot;][:7] for r in rows)
+    out = {&quot;total&quot;: len(rows), &quot;cadence&quot;: dict(sorted(cadence.items()))}
+    if sample_csv and os.path.exists(sample_csv):
+        srows = list(csv.DictReader(open(sample_csv, newline=&quot;&quot;)))
+        days = sorted(int(s[&quot;days&quot;]) for s in srows if s.get(&quot;pending&quot;) != &quot;1&quot;)
+        clean = sorted(int(s[&quot;days&quot;]) for s in srows
+                       if s.get(&quot;pending&quot;) != &quot;1&quot; and s.get(&quot;deficiency&quot;) != &quot;1&quot;)
+        out[&quot;turnaround&quot;] = dict(
+            n=len(days), values=days, min=min(days), median=statistics.median(days),
+            max=max(days), mean=round(statistics.mean(days), 1),
+            clean_values=clean)
+    return out, rows
+
+def verify(minutes_dir: str, reference_csv: str, tmp_csv: str):
+    &quot;&quot;&quot;Reproducibility check: re-extract and diff case-number sets vs a reviewed roster.&quot;&quot;&quot;
+    fresh = {r[&quot;bps_no&quot;] for r in extract(minutes_dir, tmp_csv)}
+    ref = {r[&quot;bps_no&quot;] for r in csv.DictReader(open(reference_csv, newline=&quot;&quot;))}
+    only_fresh, only_ref = sorted(fresh - ref), sorted(ref - fresh)
+    print(f&quot;reference cases: {len(ref)} | extracted cases: {len(fresh)} | &quot;
+          f&quot;in both: {len(fresh &amp; ref)}&quot;)
+    if only_ref:   print(&quot;  only in reference (extractor missed):&quot;, &quot;, &quot;.join(only_ref))
+    if only_fresh: print(&quot;  only in extract (reference missed):  &quot;, &quot;, &quot;.join(only_fresh))
+    if not (only_ref or only_fresh): print(&quot;  EXACT MATCH on case numbers.&quot;)
+    return not (only_ref or only_fresh)
+
+# --------------------------------------------------------------------------- site
+def _bar_v(vals, labels, w=620, h=240, pad=34):
+    mx = max(vals) or 1; bw = (w - 2*pad)/len(vals); inner = h - 2*pad; s = []
+    s.append(f&#x27;&lt;svg viewBox=&quot;0 0 {w} {h}&quot; role=&quot;img&quot; aria-label=&quot;Approvals per month&quot; &#x27;
+             f&#x27;style=&quot;width:100%;height:auto;font:12px system-ui,sans-serif&quot;&gt;&#x27;)
+    for gy in range(0, mx+1, max(1, mx//4)):
+        y = h-pad-inner*gy/mx
+        s.append(f&#x27;&lt;line x1=&quot;{pad}&quot; y1=&quot;{y:.1f}&quot; x2=&quot;{w-pad}&quot; y2=&quot;{y:.1f}&quot; stroke=&quot;{PAL[&quot;grid&quot;]}&quot;/&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{pad-6}&quot; y=&quot;{y+4:.1f}&quot; text-anchor=&quot;end&quot; fill=&quot;{PAL[&quot;muted&quot;]}&quot;&gt;{gy}&lt;/text&gt;&#x27;)
+    for i,(v,lb) in enumerate(zip(vals, labels)):
+        bh = inner*v/mx; x = pad+i*bw+bw*0.18; bwid = bw*0.64; y = h-pad-bh
+        s.append(f&#x27;&lt;rect x=&quot;{x:.1f}&quot; y=&quot;{y:.1f}&quot; width=&quot;{bwid:.1f}&quot; height=&quot;{bh:.1f}&quot; rx=&quot;4&quot; &#x27;
+                 f&#x27;fill=&quot;{PAL[&quot;series&quot;]}&quot;&gt;&lt;title&gt;{lb}: {v}&lt;/title&gt;&lt;/rect&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{x+bwid/2:.1f}&quot; y=&quot;{y-5:.1f}&quot; text-anchor=&quot;middle&quot; &#x27;
+                 f&#x27;fill=&quot;{PAL[&quot;ink2&quot;]}&quot; font-weight=&quot;600&quot;&gt;{v}&lt;/text&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{x+bwid/2:.1f}&quot; y=&quot;{h-pad+15:.1f}&quot; text-anchor=&quot;middle&quot; &#x27;
+                 f&#x27;fill=&quot;{PAL[&quot;muted&quot;]}&quot;&gt;{lb}&lt;/text&gt;&#x27;)
+    s.append(f&#x27;&lt;line x1=&quot;{pad}&quot; y1=&quot;{h-pad}&quot; x2=&quot;{w-pad}&quot; y2=&quot;{h-pad}&quot; stroke=&quot;{PAL[&quot;base&quot;]}&quot;/&gt;&lt;/svg&gt;&#x27;)
+    return &quot;&quot;.join(s)
+
+def build_site(roster_csv, analysis, rows, outdir, sample_rows=None):
+    os.makedirs(outdir, exist_ok=True)
+    e = lambda s: html.escape(s or &quot;&quot;)
+    cad = analysis[&quot;cadence&quot;]
+    mlbl = [m[5:] for m in cad]; mon_names = [&quot;01&quot;,&quot;02&quot;,&quot;03&quot;,&quot;04&quot;,&quot;05&quot;,&quot;06&quot;,&quot;07&quot;,&quot;08&quot;,&quot;09&quot;,&quot;10&quot;,&quot;11&quot;,&quot;12&quot;]
+    short = {&quot;01&quot;:&quot;Jan&quot;,&quot;02&quot;:&quot;Feb&quot;,&quot;03&quot;:&quot;Mar&quot;,&quot;04&quot;:&quot;Apr&quot;,&quot;05&quot;:&quot;May&quot;,&quot;06&quot;:&quot;Jun&quot;,
+             &quot;07&quot;:&quot;Jul&quot;,&quot;08&quot;:&quot;Aug&quot;,&quot;09&quot;:&quot;Sep&quot;,&quot;10&quot;:&quot;Oct&quot;,&quot;11&quot;:&quot;Nov&quot;,&quot;12&quot;:&quot;Dec&quot;}
+    labels = [short[m] for m in mlbl]; vals = list(cad.values())
+    trows = &quot;&quot;.join(&quot;&lt;tr&gt;&quot;+&quot;&quot;.join(f&quot;&lt;td&gt;{e(r[k])}&lt;/td&gt;&quot; for k in
+            [&quot;meeting_date&quot;,&quot;bps_no&quot;,&quot;applicant&quot;,&quot;address&quot;,&quot;city_block&quot;,&quot;type&quot;])+&quot;&lt;/tr&gt;&quot;
+            for r in sorted(rows, key=lambda x:(x[&quot;meeting_date&quot;], x[&quot;bps_no&quot;])))
+    t = analysis.get(&quot;turnaround&quot;, {})
+    turic = (f&#x27;median {t[&quot;median&quot;]} days (n={t[&quot;n&quot;]}; range {t[&quot;min&quot;]}–{t[&quot;max&quot;]})&#x27;
+             if t else &quot;sample pending&quot;)
+    doc = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;St. Louis Parcel &amp;amp; Survey Permits — methodology &amp;amp; data&lt;/title&gt;
+&lt;style&gt;
+body{{margin:0;background:{PAL[&#x27;page&#x27;]};color:{PAL[&#x27;ink&#x27;]};
+font:16px/1.55 system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif}}
+main{{max-width:860px;margin:0 auto;padding:28px 20px 80px}}
+h1{{font-size:28px}} h2{{font-size:20px;border-bottom:2px solid {PAL[&#x27;ink&#x27;]};padding-bottom:4px;margin-top:1.8em}}
+.note{{font-size:13px;color:{PAL[&#x27;muted&#x27;]}}}
+table{{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}}
+th,td{{text-align:left;padding:5px 8px;border-bottom:1px solid {PAL[&#x27;grid&#x27;]}}}
+.wrap{{max-height:460px;overflow:auto;border:1px solid {PAL[&#x27;grid&#x27;]};border-radius:8px}}
+a{{color:{PAL[&#x27;series&#x27;]}}} code{{background:#eee;padding:1px 4px;border-radius:3px}}
+details{{margin:10px 0;border:1px solid {PAL[&#x27;grid&#x27;]};border-radius:8px;background:{PAL[&#x27;surface&#x27;]};padding:4px 10px}}
+summary{{cursor:pointer;font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace}}
+pre{{overflow:auto;background:#0b0b0b;color:#e6e6e6;padding:12px;border-radius:8px;
+font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;max-height:560px}}
+pre code{{background:none;color:inherit;padding:0}}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;main&gt;
+&lt;h1&gt;St. Louis parcel &amp;amp; survey permits — data &amp;amp; method&lt;/h1&gt;
+&lt;p class=&quot;note&quot;&gt;Built from public records with an open-source Python pipeline. Reproducible: run it yourself.&lt;/p&gt;
+&lt;h2&gt;How many clear, and when&lt;/h2&gt;
+&lt;p&gt;{analysis[&#x27;total&#x27;]} parcel/survey matters in the {len(cad)} months covered. Turnaround sample: {turic}.&lt;/p&gt;
+{_bar_v(vals, labels)}
+&lt;h2&gt;Method&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;b&gt;Sources&lt;/b&gt; — public BPS board minutes (PDFs) and the City case-check system.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;fetch&lt;/b&gt; — downloads each weekly minutes PDF, verifies it, extracts text, writes a SHA-256 manifest.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;extract&lt;/b&gt; — parses the minutes text for parcel/survey items (keyword + case-number match).&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;analyze&lt;/b&gt; — monthly cadence; turnaround from a documented case-check sample.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;verify&lt;/b&gt; — re-extracts and diffs against the reviewed roster.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p class=&quot;note&quot;&gt;Limitation: the minutes give one date per case (board approval), not the per-step
+review clock; the turnaround sample is small and non-random. The population distribution
+requires the City&#x27;s workflow data (requested under the Missouri Sunshine Law).
+Code: &lt;code&gt;bps_pipeline.py&lt;/code&gt;. Data: &lt;a href=&quot;parcel-survey-roster.csv&quot;&gt;roster CSV&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;The data&lt;/h2&gt;
+&lt;div class=&quot;wrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Board date&lt;/th&gt;&lt;th&gt;Case&lt;/th&gt;&lt;th&gt;Applicant&lt;/th&gt;
+&lt;th&gt;Property&lt;/th&gt;&lt;th&gt;City block&lt;/th&gt;&lt;th&gt;Type&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{trows}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;/main&gt;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+    out = os.path.join(outdir, &quot;index.html&quot;); open(out, &quot;w&quot;).write(doc)
+    import shutil; shutil.copy(roster_csv, os.path.join(outdir, &quot;parcel-survey-roster.csv&quot;))
+    print(f&quot;site -&gt; {out}&quot;)
+
+# --------------------------------------------------------------------------- CLI
+def main(argv=None):
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = p.add_subparsers(dest=&quot;cmd&quot;, required=True)
+    sp = sub.add_parser(&quot;fetch&quot;);   sp.add_argument(&quot;--minutes-dir&quot;, required=True); sp.add_argument(&quot;--year&quot;, type=int, default=2026)
+    sp = sub.add_parser(&quot;extract&quot;); sp.add_argument(&quot;--minutes-dir&quot;, required=True); sp.add_argument(&quot;--out&quot;, required=True)
+    sp = sub.add_parser(&quot;analyze&quot;); sp.add_argument(&quot;--roster&quot;, required=True); sp.add_argument(&quot;--sample&quot;)
+    sp = sub.add_parser(&quot;verify&quot;);  sp.add_argument(&quot;--minutes-dir&quot;, required=True); sp.add_argument(&quot;--reference&quot;, required=True); sp.add_argument(&quot;--tmp&quot;, default=&quot;/tmp/_bps_fresh.csv&quot;)
+    sp = sub.add_parser(&quot;site&quot;);    sp.add_argument(&quot;--roster&quot;, required=True); sp.add_argument(&quot;--sample&quot;); sp.add_argument(&quot;--outdir&quot;, required=True)
+    a = p.parse_args(argv)
+    if a.cmd == &quot;fetch&quot;:    fetch(a.minutes_dir, a.year)
+    elif a.cmd == &quot;extract&quot;: extract(a.minutes_dir, a.out)
+    elif a.cmd == &quot;analyze&quot;:
+        res, _ = analyze(a.roster, a.sample); import json; print(json.dumps(res, indent=2))
+    elif a.cmd == &quot;verify&quot;:  sys.exit(0 if verify(a.minutes_dir, a.reference, a.tmp) else 1)
+    elif a.cmd == &quot;site&quot;:
+        res, rows = analyze(a.roster, a.sample); build_site(a.roster, res, rows, a.outdir)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></details><details><summary>src/make_site.py — 325 lines</summary><pre><code>#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+# City Data Sleuth — multi-page static site generator.
+# Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
+&quot;&quot;&quot;
+Builds the public site from the analysis outputs and the content/ markdown.
+
+    python3 src/make_site.py
+
+Reads  : data/parcel-survey-roster.csv, data/turnaround-sample.csv, content/*.md,
+         content/assets/* (optional), src/*.py (shown on the methods page)
+Writes : docs/  (GitHub Pages root) — index, case, data, exhibits,
+         records-request, methods, reuse
+No third-party dependencies.
+&quot;&quot;&quot;
+from __future__ import annotations
+import csv, html, os, re, shutil
+import bps_pipeline as bp   # same dir; provides analyze()
+
+ROOT    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA    = os.path.join(ROOT, &quot;data&quot;)
+CONTENT = os.path.join(ROOT, &quot;content&quot;)
+SRC     = os.path.join(ROOT, &quot;src&quot;)
+DOCS    = os.path.join(ROOT, &quot;docs&quot;)
+REPO    = &quot;https://github.com/nestorwheelock/city-data-sleuth&quot;
+BRAND   = &quot;City Data Sleuth&quot;
+PAL     = bp.PAL
+
+NAV = [(&quot;index.html&quot;,&quot;Story&quot;), (&quot;case.html&quot;,&quot;The case&quot;), (&quot;data.html&quot;,&quot;The data&quot;),
+       (&quot;exhibits.html&quot;,&quot;Exhibits&quot;), (&quot;records-request.html&quot;,&quot;Records requests&quot;),
+       (&quot;methods.html&quot;,&quot;Methods &amp; code&quot;), (&quot;reuse.html&quot;,&quot;Use it yourself&quot;)]
+
+def e(s): return html.escape(str(s if s is not None else &quot;&quot;))
+
+# ----------------------------------------------------------------- minimal markdown
+def md(text: str) -&gt; str:
+    out, i, lines = [], 0, text.split(&quot;\n&quot;)
+    def inline(s):
+        s = e(s)
+        s = re.sub(r&quot;\*\*(.+?)\*\*&quot;, r&quot;&lt;strong&gt;\1&lt;/strong&gt;&quot;, s)
+        s = re.sub(r&quot;`(.+?)`&quot;, r&quot;&lt;code&gt;\1&lt;/code&gt;&quot;, s)
+        s = re.sub(r&quot;\[(.+?)\]\((.+?)\)&quot;, r&#x27;&lt;a href=&quot;\2&quot;&gt;\1&lt;/a&gt;&#x27;, s)
+        return s
+    while i &lt; len(lines):
+        ln = lines[i]
+        if not ln.strip(): i += 1; continue
+        m = re.match(r&quot;(#{1,4})\s+(.*)&quot;, ln)
+        if m:
+            lvl = len(m.group(1)); out.append(f&quot;&lt;h{lvl}&gt;{inline(m.group(2))}&lt;/h{lvl}&gt;&quot;); i += 1; continue
+        if ln.lstrip().startswith(&quot;&gt;&quot;):
+            buf = []
+            while i &lt; len(lines) and lines[i].lstrip().startswith(&quot;&gt;&quot;):
+                buf.append(lines[i].lstrip()[1:].lstrip()); i += 1
+            out.append(&quot;&lt;blockquote&gt;&quot; + &quot;&lt;br&gt;&quot;.join(inline(b) for b in buf if b) + &quot;&lt;/blockquote&gt;&quot;); continue
+        if re.match(r&quot;\s*[-*]\s+&quot;, ln):
+            buf = []
+            while i &lt; len(lines) and re.match(r&quot;\s*[-*]\s+&quot;, lines[i]):
+                buf.append(re.sub(r&quot;\s*[-*]\s+&quot;, &quot;&quot;, lines[i], count=1)); i += 1
+            out.append(&quot;&lt;ul&gt;&quot; + &quot;&quot;.join(f&quot;&lt;li&gt;{inline(b)}&lt;/li&gt;&quot; for b in buf) + &quot;&lt;/ul&gt;&quot;); continue
+        if re.match(r&quot;\s*\d+\.\s+&quot;, ln):
+            buf = []
+            while i &lt; len(lines) and re.match(r&quot;\s*\d+\.\s+&quot;, lines[i]):
+                buf.append(re.sub(r&quot;\s*\d+\.\s+&quot;, &quot;&quot;, lines[i], count=1)); i += 1
+            out.append(&quot;&lt;ol&gt;&quot; + &quot;&quot;.join(f&quot;&lt;li&gt;{inline(b)}&lt;/li&gt;&quot; for b in buf) + &quot;&lt;/ol&gt;&quot;); continue
+        buf = []
+        while i &lt; len(lines) and lines[i].strip() and not re.match(r&quot;(#{1,4}\s|\s*[-*]\s|\s*\d+\.\s|&gt;)&quot;, lines[i]):
+            buf.append(lines[i]); i += 1
+        out.append(&quot;&lt;p&gt;&quot; + inline(&quot; &quot;.join(buf)) + &quot;&lt;/p&gt;&quot;)
+    return &quot;\n&quot;.join(out)
+
+def read_md(name):
+    p = os.path.join(CONTENT, name)
+    return md(open(p, encoding=&quot;utf-8&quot;).read()) if os.path.exists(p) else &quot;&quot;
+
+# ----------------------------------------------------------------- charts (inline SVG)
+def bar_v(cadence, w=640, h=260, pad=36):
+    short = {&quot;01&quot;:&quot;Jan&quot;,&quot;02&quot;:&quot;Feb&quot;,&quot;03&quot;:&quot;Mar&quot;,&quot;04&quot;:&quot;Apr&quot;,&quot;05&quot;:&quot;May&quot;,&quot;06&quot;:&quot;Jun&quot;,
+             &quot;07&quot;:&quot;Jul&quot;,&quot;08&quot;:&quot;Aug&quot;,&quot;09&quot;:&quot;Sep&quot;,&quot;10&quot;:&quot;Oct&quot;,&quot;11&quot;:&quot;Nov&quot;,&quot;12&quot;:&quot;Dec&quot;}
+    labels = [short[k[5:]] for k in cadence]; vals = list(cadence.values())
+    mx = max(vals) or 1; bw = (w-2*pad)/len(vals); inner = h-2*pad; s = []
+    s.append(f&#x27;&lt;svg viewBox=&quot;0 0 {w} {h}&quot; role=&quot;img&quot; aria-label=&quot;Approvals per month&quot; class=&quot;chart&quot;&gt;&#x27;)
+    for gy in range(0, mx+1, max(1, mx//4)):
+        y = h-pad-inner*gy/mx
+        s.append(f&#x27;&lt;line x1=&quot;{pad}&quot; y1=&quot;{y:.1f}&quot; x2=&quot;{w-pad}&quot; y2=&quot;{y:.1f}&quot; stroke=&quot;{PAL[&quot;grid&quot;]}&quot;/&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{pad-6}&quot; y=&quot;{y+4:.1f}&quot; text-anchor=&quot;end&quot; fill=&quot;{PAL[&quot;muted&quot;]}&quot; font-size=&quot;11&quot;&gt;{gy}&lt;/text&gt;&#x27;)
+    for i,(v,lb) in enumerate(zip(vals, labels)):
+        bh = inner*v/mx; x = pad+i*bw+bw*0.18; bwid = bw*0.64; y = h-pad-bh
+        s.append(f&#x27;&lt;rect x=&quot;{x:.1f}&quot; y=&quot;{y:.1f}&quot; width=&quot;{bwid:.1f}&quot; height=&quot;{bh:.1f}&quot; rx=&quot;4&quot; fill=&quot;{PAL[&quot;series&quot;]}&quot;&gt;&lt;title&gt;{lb}: {v}&lt;/title&gt;&lt;/rect&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{x+bwid/2:.1f}&quot; y=&quot;{y-6:.1f}&quot; text-anchor=&quot;middle&quot; fill=&quot;{PAL[&quot;ink2&quot;]}&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot;&gt;{v}&lt;/text&gt;&#x27;)
+        s.append(f&#x27;&lt;text x=&quot;{x+bwid/2:.1f}&quot; y=&quot;{h-pad+16:.1f}&quot; text-anchor=&quot;middle&quot; fill=&quot;{PAL[&quot;muted&quot;]}&quot; font-size=&quot;11&quot;&gt;{lb}&lt;/text&gt;&#x27;)
+    s.append(f&#x27;&lt;line x1=&quot;{pad}&quot; y1=&quot;{h-pad}&quot; x2=&quot;{w-pad}&quot; y2=&quot;{h-pad}&quot; stroke=&quot;{PAL[&quot;base&quot;]}&quot;/&gt;&lt;/svg&gt;&#x27;)
+    return &quot;&quot;.join(s)
+
+def bar_h(sample_rows, w=640, rowh=28, pad=118):
+    items = sorted([r for r in sample_rows if r.get(&quot;pending&quot;) != &quot;1&quot;], key=lambda r:int(r[&quot;days&quot;]))
+    items += [r for r in sample_rows if r.get(&quot;pending&quot;) == &quot;1&quot;]
+    mx = max(int(r[&quot;days&quot;]) for r in items); plot = w-pad-150; h = rowh*len(items)+16; s = []
+    s.append(f&#x27;&lt;svg viewBox=&quot;0 0 {w} {h}&quot; role=&quot;img&quot; aria-label=&quot;Building-review days per case&quot; class=&quot;chart&quot;&gt;&#x27;)
+    for i, r in enumerate(items):
+        v = int(r[&quot;days&quot;]); pend = r.get(&quot;pending&quot;) == &quot;1&quot;; defic = r.get(&quot;deficiency&quot;) == &quot;1&quot;
+        y = 8+i*rowh; bw = plot*v/mx; col = PAL[&quot;crit&quot;] if pend else PAL[&quot;series&quot;]
+        s.append(f&#x27;&lt;text x=&quot;{pad-8}&quot; y=&quot;{y+14:.0f}&quot; text-anchor=&quot;end&quot; fill=&quot;{PAL[&quot;ink2&quot;]}&quot; font-size=&quot;12&quot; style=&quot;font-variant-numeric:tabular-nums&quot;&gt;{e(r[&quot;case&quot;])}&lt;/text&gt;&#x27;)
+        s.append(f&#x27;&lt;rect x=&quot;{pad}&quot; y=&quot;{y:.0f}&quot; width=&quot;{bw:.1f}&quot; height=&quot;{rowh-9}&quot; rx=&quot;4&quot; fill=&quot;{col}&quot;&gt;&lt;title&gt;{e(r[&quot;case&quot;])}: {v} days&lt;/title&gt;&lt;/rect&gt;&#x27;)
+        tag = &quot; — pending, no decision&quot; if pend else (&quot; — had a deficiency&quot; if defic else &quot;&quot;)
+        s.append(f&#x27;&lt;text x=&quot;{pad+bw+6:.1f}&quot; y=&quot;{y+14:.0f}&quot; fill=&quot;{PAL[&quot;crit&quot;] if pend else PAL[&quot;ink2&quot;]}&quot; font-size=&quot;12&quot; font-weight=&quot;{700 if pend else 400}&quot;&gt;{v} days{tag}&lt;/text&gt;&#x27;)
+    s.append(&quot;&lt;/svg&gt;&quot;)
+    return &quot;&quot;.join(s)
+
+# ----------------------------------------------------------------- page shell
+CSS = r&quot;&quot;&quot;
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--pg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,sans-serif}
+a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
+header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--grid)}
+.nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand span{color:var(--ser)}
+.nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
+main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
+.hero{max-width:960px;margin:0 auto;padding:54px 20px 20px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.02em;margin:.1em 0}
+h2{font-size:23px;margin:1.9em 0 .5em;letter-spacing:-.01em}
+h3{font-size:18px;margin:1.4em 0 .4em}
+.lede{font-size:20px;color:var(--ink2);max-width:40em}
+.tiles{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.tile{flex:1 1 160px;background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:16px 18px}
+.tile .n{font-size:30px;font-weight:800;letter-spacing:-.02em} .tile .n.crit{color:var(--crit)}
+.tile .l{font-size:13px;color:var(--ink2);margin-top:2px}
+.card{background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:18px 20px;margin:16px 0}
+.chart{width:100%;height:auto;font-family:system-ui,sans-serif}
+.step{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink2)}
+.step b{background:var(--s);border:1px solid var(--grid);border-radius:999px;padding:5px 12px;color:var(--ink)}
+.callout{border-left:4px solid var(--ser);background:var(--s);padding:12px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+.callout.crit{border-color:var(--crit)}
+blockquote{border-left:3px solid var(--base);margin:12px 0;padding:6px 16px;color:var(--ink2);background:var(--s);border-radius:0 8px 8px 0}
+ul,ol{padding-left:22px} li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{position:sticky;top:0;background:var(--s);cursor:pointer;white-space:nowrap}
+.wrap{max-height:520px;overflow:auto;border:1px solid var(--grid);border-radius:10px}
+.note{font-size:13px;color:var(--mut)}
+.btn{display:inline-block;background:var(--ser);color:#fff;padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px}
+.btn:hover{text-decoration:none;filter:brightness(.95)}
+input.filter{width:100%;padding:9px 12px;border:1px solid var(--grid);border-radius:8px;margin:0 0 10px;font-size:14px}
+details{margin:10px 0;border:1px solid var(--grid);border-radius:10px;background:var(--s);padding:4px 12px}
+summary{cursor:pointer;font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+pre{overflow:auto;background:#0b0b0b;color:#e6e6e6;padding:14px;border-radius:8px;
+ font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;max-height:620px}
+pre code{background:none;color:inherit;padding:0}
+code{background:#eee;padding:1px 5px;border-radius:4px;font-size:.92em}
+footer{border-top:1px solid var(--grid);margin-top:50px}
+.foot-in{max-width:960px;margin:0 auto;padding:22px 20px;color:var(--mut);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(max-width:560px){h1{font-size:30px}}
+&quot;&quot;&quot;
+VARS = (f&quot;:root{{--s:{PAL[&#x27;surface&#x27;]};--pg:{PAL[&#x27;page&#x27;]};--ink:{PAL[&#x27;ink&#x27;]};--ink2:{PAL[&#x27;ink2&#x27;]};&quot;
+        f&quot;--mut:{PAL[&#x27;muted&#x27;]};--grid:{PAL[&#x27;grid&#x27;]};--base:{PAL[&#x27;base&#x27;]};--ser:{PAL[&#x27;series&#x27;]};--crit:{PAL[&#x27;crit&#x27;]};}}&quot;)
+
+def shell(title, active, body, hero=None):
+    nav = &quot;&quot;.join(f&#x27;&lt;a href=&quot;{h}&quot; class=&quot;{&quot;on&quot; if h==active else &quot;&quot;}&quot;&gt;{e(l)}&lt;/a&gt;&#x27; for h,l in NAV)
+    hero_html = f&#x27;&lt;section class=&quot;hero&quot;&gt;{hero}&lt;/section&gt;&#x27; if hero else &quot;&quot;
+    return f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;{e(title)} — {BRAND}&lt;/title&gt;
+&lt;style&gt;{VARS}{CSS}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
+&lt;header class=&quot;nav&quot;&gt;&lt;div class=&quot;nav-in&quot;&gt;&lt;a class=&quot;brand&quot; href=&quot;index.html&quot;&gt;City Data &lt;span&gt;Sleuth&lt;/span&gt;&lt;/a&gt;{nav}&lt;/div&gt;&lt;/header&gt;
+{hero_html}&lt;main&gt;{body}&lt;/main&gt;
+&lt;footer&gt;&lt;div class=&quot;foot-in&quot;&gt;
+&lt;span&gt;Built from public records with open-source code.&lt;/span&gt;
+&lt;span&gt;&lt;a href=&quot;{REPO}&quot;&gt;Source on GitHub&lt;/a&gt;&lt;/span&gt;
+&lt;span&gt;Licensed GNU GPL v3&lt;/span&gt;&lt;span&gt;Not legal advice.&lt;/span&gt;
+&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+
+# ----------------------------------------------------------------- build
+def build():
+    os.makedirs(DOCS, exist_ok=True)
+    roster = os.path.join(DATA, &quot;parcel-survey-roster.csv&quot;)
+    sample = os.path.join(DATA, &quot;turnaround-sample.csv&quot;)
+    analysis, rows = bp.analyze(roster, sample)
+    srows = list(csv.DictReader(open(sample, newline=&quot;&quot;)))
+    t = analysis.get(&quot;turnaround&quot;, {})
+    median = t.get(&quot;median&quot;, &quot;–&quot;)
+
+    # ---- index / story
+    hero = f&quot;&quot;&quot;&lt;h1&gt;A permit stalled. The City&#x27;s own records show how unusual that is.&lt;/h1&gt;
+&lt;p class=&quot;lede&quot;&gt;Small property-line changes all run through the same St. Louis review. Using the
+City&#x27;s published board minutes and permit-status system, this is what that process looks
+like across 2026 — and one application that simply stopped.&lt;/p&gt;
+&lt;div class=&quot;tiles&quot;&gt;
+&lt;div class=&quot;tile&quot;&gt;&lt;div class=&quot;n&quot;&gt;{analysis[&#x27;total&#x27;]}&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;parcel/survey matters charted (2026)&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;tile&quot;&gt;&lt;div class=&quot;n&quot;&gt;~{median} days&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;median Building review (public sample)&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;tile&quot;&gt;&lt;div class=&quot;n crit&quot;&gt;27 days+&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;case BPS26-0517, still pending&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;&quot;&quot;&quot;
+    body = f&quot;&quot;&quot;
+&lt;h2&gt;The process&lt;/h2&gt;
+&lt;p&gt;Every parcel/survey permit passes through these reviews before the Board approves it:&lt;/p&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;step&quot;&gt;&lt;b&gt;1 · BPS Survey&lt;/b&gt;→&lt;b&gt;2 · Water&lt;/b&gt;→&lt;b&gt;3 · Assessor&lt;/b&gt;→
+&lt;b&gt;4 · Building (Public Safety)&lt;/b&gt;→&lt;b&gt;5 · Board approval&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2&gt;How many clear, and when&lt;/h2&gt;
+&lt;p&gt;In 2026 the Board approved &lt;strong&gt;{analysis[&#x27;total&#x27;]}&lt;/strong&gt; parcel/survey matters — a steady
+flow every month. (Board-approval dates, from the public minutes.)&lt;/p&gt;
+&lt;div class=&quot;card&quot;&gt;{bar_v(analysis[&#x27;cadence&#x27;])}&lt;/div&gt;
+&lt;h2&gt;How Building review compares&lt;/h2&gt;
+&lt;p&gt;For cases where both dates are public, Building review runs from a few days to about four
+weeks. The one case that took as long as BPS26-0517 carried a documented deficiency — this one shows none.&lt;/p&gt;
+&lt;div class=&quot;card&quot;&gt;{bar_h(srows)}&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Small, non-random sample (n={t.get(&#x27;n&#x27;,&#x27;?&#x27;)}); the population distribution needs the City&#x27;s
+workflow data, requested via public records. See &lt;a href=&quot;methods.html&quot;&gt;Methods&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&quot;callout crit&quot;&gt;&lt;strong&gt;The case in one line:&lt;/strong&gt; every other department cleared
+BPS26-0517 by Sept 15; Building has sat with &lt;strong&gt;no date assigned&lt;/strong&gt; and no stated
+deficiency, while {analysis[&#x27;total&#x27;]} comparable matters moved through. &lt;a href=&quot;case.html&quot;&gt;See the case →&lt;/a&gt;&lt;/div&gt;
+&quot;&quot;&quot;
+    write(&quot;index.html&quot;, shell(&quot;A permit stalled&quot;, &quot;index.html&quot;, body, hero=hero))
+
+    # ---- case
+    case_body = f&quot;&quot;&quot;&lt;h1&gt;The case: BPS26-0517&lt;/h1&gt;
+{read_md(&quot;permit-description.md&quot;)}
+&lt;h2&gt;Timeline&lt;/h2&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;table&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;9/4&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Application submitted&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;9/9&lt;/b&gt;&lt;/td&gt;&lt;td&gt;BPS Survey review — approved&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;9/15&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Water — approved&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;9/15&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Assessor — approved&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;10/6&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;span style=&quot;color:var(--crit);font-weight:700&quot;&gt;Building — PENDING, no date assigned&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;div class=&quot;callout crit&quot;&gt;&lt;span style=&quot;font-size:26px;font-weight:800;color:var(--crit)&quot;&gt;27 days pending&lt;/span&gt;&lt;br&gt;
+Building shows no deficiency and no assigned date, while every other department finished by Sept 15.&lt;/div&gt;
+&lt;p&gt;&lt;a class=&quot;btn&quot; href=&quot;exhibits.html&quot;&gt;See the exhibits →&lt;/a&gt;&lt;/p&gt;&quot;&quot;&quot;
+    write(&quot;case.html&quot;, shell(&quot;The case&quot;, &quot;case.html&quot;, case_body))
+
+    # ---- data
+    trows = &quot;&quot;.join(&quot;&lt;tr&gt;&quot;+&quot;&quot;.join(f&quot;&lt;td&gt;{e(r[k])}&lt;/td&gt;&quot; for k in
+            [&quot;meeting_date&quot;,&quot;bps_no&quot;,&quot;applicant&quot;,&quot;address&quot;,&quot;city_block&quot;,&quot;type&quot;])+&quot;&lt;/tr&gt;&quot;
+            for r in sorted(rows, key=lambda x:(x[&quot;meeting_date&quot;], x[&quot;bps_no&quot;])))
+    data_body = f&quot;&quot;&quot;&lt;h1&gt;The data&lt;/h1&gt;
+&lt;p&gt;All {len(rows)} parcel/survey matters the Board approved in 2026, extracted from the published
+minutes. &lt;a class=&quot;btn&quot; href=&quot;parcel-survey-roster.csv&quot;&gt;Download CSV&lt;/a&gt;&lt;/p&gt;
+&lt;input class=&quot;filter&quot; id=&quot;f&quot; placeholder=&quot;Filter — applicant, address, case, type…&quot; onkeyup=&quot;flt()&quot;&gt;
+&lt;div class=&quot;wrap&quot;&gt;&lt;table id=&quot;t&quot;&gt;&lt;thead&gt;&lt;tr&gt;
+&lt;th&gt;Board date&lt;/th&gt;&lt;th&gt;Case&lt;/th&gt;&lt;th&gt;Applicant&lt;/th&gt;&lt;th&gt;Property&lt;/th&gt;&lt;th&gt;City block&lt;/th&gt;&lt;th&gt;Type&lt;/th&gt;
+&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{trows}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Source: City of St. Louis Board of Public Service meeting minutes. Reproducible via
+the &lt;a href=&quot;methods.html&quot;&gt;open-source pipeline&lt;/a&gt;.&lt;/p&gt;
+&lt;script&gt;
+function flt(){{var q=document.getElementById(&#x27;f&#x27;).value.toLowerCase();
+ document.querySelectorAll(&#x27;#t tbody tr&#x27;).forEach(r=&gt;r.style.display=r.innerText.toLowerCase().includes(q)?&#x27;&#x27;:&#x27;none&#x27;)}}
+document.querySelectorAll(&#x27;#t th&#x27;).forEach((th,i)=&gt;th.onclick=()=&gt;{{var tb=th.closest(&#x27;table&#x27;).tBodies[0],
+ rs=[...tb.rows],a=th.d=!th.d;rs.sort((x,y)=&gt;(a?1:-1)*x.cells[i].innerText.localeCompare(y.cells[i].innerText,undefined,{{numeric:true}}));
+ rs.forEach(r=&gt;tb.appendChild(r))}});
+&lt;/script&gt;&quot;&quot;&quot;
+    write(&quot;data.html&quot;, shell(&quot;The data&quot;, &quot;data.html&quot;, data_body))
+    shutil.copy(roster, os.path.join(DOCS, &quot;parcel-survey-roster.csv&quot;))
+
+    # ---- exhibits
+    plat = &quot;&quot;
+    for ext in (&quot;png&quot;,&quot;jpg&quot;,&quot;jpeg&quot;,&quot;webp&quot;):
+        if os.path.exists(os.path.join(CONTENT,&quot;assets&quot;,f&quot;plat.{ext}&quot;)):
+            os.makedirs(os.path.join(DOCS,&quot;assets&quot;), exist_ok=True)
+            shutil.copy(os.path.join(CONTENT,&quot;assets&quot;,f&quot;plat.{ext}&quot;), os.path.join(DOCS,&quot;assets&quot;,f&quot;plat.{ext}&quot;))
+            plat = f&#x27;&lt;img src=&quot;assets/plat.{ext}&quot; alt=&quot;Survey plat for BPS26-0517&quot; style=&quot;max-width:100%;border:1px solid var(--grid);border-radius:8px&quot;&gt;&#x27;
+            break
+    if not plat:
+        plat = (&#x27;&lt;div class=&quot;note&quot;&gt;The survey plat is a public exhibit on the City case page. &#x27;
+                &#x27;To include it, drop the image at &lt;code&gt;content/assets/plat.png&lt;/code&gt; and rebuild.&lt;/div&gt;&#x27;)
+    ex_body = f&quot;&quot;&quot;&lt;h1&gt;Exhibits&lt;/h1&gt;
+&lt;p class=&quot;note&quot;&gt;Deliberately excluded: ownership records, deeds, purchase contracts, and other
+private documents. This page shows the permit request, the public correspondence, and the survey exhibit only.&lt;/p&gt;
+&lt;section&gt;{read_md(&quot;permit-description.md&quot;)}&lt;/section&gt;
+&lt;h2&gt;The survey plat&lt;/h2&gt;
+&lt;div class=&quot;card&quot;&gt;{plat}&lt;/div&gt;
+&lt;section&gt;{read_md(&quot;alderman-email-chain.md&quot;)}&lt;/section&gt;
+&lt;h2&gt;One-page summary&lt;/h2&gt;
+&lt;p&gt;A printable summary of the case and the comparison. &lt;a class=&quot;btn&quot; href=&quot;summary.pdf&quot;&gt;Download PDF&lt;/a&gt;
+&lt;span class=&quot;note&quot;&gt;(generated by &lt;code&gt;src/make_pdf.py&lt;/code&gt;)&lt;/span&gt;&lt;/p&gt;&quot;&quot;&quot;
+    write(&quot;exhibits.html&quot;, shell(&quot;Exhibits&quot;, &quot;exhibits.html&quot;, ex_body))
+
+    # ---- records-request guide
+    write(&quot;records-request.html&quot;, shell(&quot;Records requests&quot;, &quot;records-request.html&quot;,
+          f&#x27;&lt;article&gt;{read_md(&quot;records-request-guide.md&quot;)}&lt;/article&gt;&#x27;))
+
+    # ---- reuse
+    write(&quot;reuse.html&quot;, shell(&quot;Use it yourself&quot;, &quot;reuse.html&quot;,
+          f&#x27;&lt;article&gt;{read_md(&quot;reuse.md&quot;)}&lt;/article&gt;&#x27;))
+
+    # ---- methods + code
+    code_files = [&quot;bps_pipeline.py&quot;,&quot;make_site.py&quot;,&quot;make_pdf.py&quot;,&quot;test_bps_pipeline.py&quot;]
+    blocks = []
+    for fn in code_files:
+        p = os.path.join(SRC, fn)
+        if os.path.exists(p):
+            src = e(open(p, encoding=&quot;utf-8&quot;).read()); n = src.count(&quot;\n&quot;)+1
+            blocks.append(f&#x27;&lt;details&gt;&lt;summary&gt;src/{fn} — {n} lines&lt;/summary&gt;&lt;pre&gt;&lt;code&gt;{src}&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;&#x27;)
+    sp = os.path.join(DATA,&quot;turnaround-sample.csv&quot;)
+    if os.path.exists(sp):
+        src = e(open(sp).read())
+        blocks.append(f&#x27;&lt;details&gt;&lt;summary&gt;data/turnaround-sample.csv&lt;/summary&gt;&lt;pre&gt;&lt;code&gt;{src}&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;&#x27;)
+    m_body = f&quot;&quot;&quot;&lt;h1&gt;Methods &amp;amp; code&lt;/h1&gt;
+&lt;p&gt;Everything that produced this site, released under the GNU GPL v3. Copy it, run it, check it.&lt;/p&gt;
+&lt;h2&gt;Pipeline&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;b&gt;fetch&lt;/b&gt; — download each weekly minutes PDF, verify it, extract text, write a SHA-256 manifest.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;extract&lt;/b&gt; — parse the minutes text into a parcel/survey roster (keyword + case-number rules).&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;analyze&lt;/b&gt; — monthly cadence; turnaround from a documented public sample.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;verify&lt;/b&gt; — re-extract and diff against the reviewed roster (last run: exact match).&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;site&lt;/b&gt; — this generator renders the pages you&#x27;re reading.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;What the data can and cannot show&lt;/h2&gt;
+&lt;p&gt;The minutes give &lt;b&gt;one date per case&lt;/b&gt; (board approval), not the per-step review clock. Turnaround
+exists only on the public case pages; the sample here is small and non-random. The population-wide
+distribution requires the City&#x27;s workflow timestamps — requested via public records (see
+&lt;a href=&quot;records-request.html&quot;&gt;the guide&lt;/a&gt;).&lt;/p&gt;
+&lt;h2&gt;The source code&lt;/h2&gt;
+{&#x27;&#x27;.join(blocks)}
+&lt;p class=&quot;note&quot;&gt;Reproducibility: unit tests ship with the parsers; &lt;code&gt;verify&lt;/code&gt; re-derives the
+roster from the minutes text and diffs it against the reviewed reference. Archived PDFs carry a
+SHA-256 manifest. Full repo: &lt;a href=&quot;{REPO}&quot;&gt;{REPO}&lt;/a&gt;.&lt;/p&gt;&quot;&quot;&quot;
+    write(&quot;methods.html&quot;, shell(&quot;Methods &amp; code&quot;, &quot;methods.html&quot;, m_body))
+    print(f&quot;built {len(NAV)} pages -&gt; {DOCS}&quot;)
+
+def write(name, content):
+    open(os.path.join(DOCS, name), &quot;w&quot;, encoding=&quot;utf-8&quot;).write(content)
+
+if __name__ == &quot;__main__&quot;:
+    build()
+</code></pre></details><details><summary>src/make_pdf.py — 64 lines</summary><pre><code>#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+# City Data Sleuth — one-page case summary PDF generator.
+# Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
+&quot;&quot;&quot;
+Render the one-page case summary to docs/summary.pdf.
+
+    python3 src/make_pdf.py
+
+Requires the `wkhtmltopdf` binary (https://wkhtmltopdf.org). Writes an intermediate
+HTML next to the PDF. Case facts are read from data/ where possible; the narrative
+summary is defined here.
+&quot;&quot;&quot;
+import os, subprocess, tempfile
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DOCS = os.path.join(ROOT, &quot;docs&quot;)
+os.makedirs(DOCS, exist_ok=True)
+
+HTML = &quot;&quot;&quot;&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+@page{size:letter;margin:.7in}
+body{font:12pt/1.4 Georgia,serif;color:#111}
+h1{font-size:17pt;margin:0 0 2px}
+.sub{font-size:10.5pt;color:#333;margin:0 0 14px}
+h2{font-size:12pt;text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid #111;padding-bottom:3px;margin:16px 0 8px}
+td{padding:3px 8px 3px 0;vertical-align:top} td.d{width:60px;font-weight:bold;white-space:nowrap}
+.pending{color:#a00;font-weight:bold} .ok{color:#060}
+.box{background:#f4f4f4;border:1px solid #ccc;padding:10px 14px;margin:6px 0}
+.big{font-size:15pt;font-weight:bold} .q{font-style:italic;font-size:12.5pt}
+.foot{font-size:9.5pt;color:#555;margin-top:16px;border-top:1px solid #ccc;padding-top:6px}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
+&lt;h1&gt;Permit BPS26-0517 &amp;mdash; 3235 Ivanhoe Ave, St. Louis 63139&lt;/h1&gt;
+&lt;p class=&quot;sub&quot;&gt;&lt;b&gt;Purpose:&lt;/b&gt; Boundary adjustment (~525 sq ft; no construction).
+&amp;nbsp;&amp;bull;&amp;nbsp; &lt;b&gt;Source:&lt;/b&gt; City of St. Louis case-check system &amp;amp; published BPS board minutes.&lt;/p&gt;
+&lt;h2&gt;Timeline&lt;/h2&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;td class=&quot;d&quot;&gt;9/4&lt;/td&gt;&lt;td&gt;Application submitted&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class=&quot;d&quot;&gt;9/9&lt;/td&gt;&lt;td&gt;BPS Survey review &amp;mdash; &lt;span class=&quot;ok&quot;&gt;APPROVED&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class=&quot;d&quot;&gt;9/15&lt;/td&gt;&lt;td&gt;Water &amp;mdash; &lt;span class=&quot;ok&quot;&gt;APPROVED&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class=&quot;d&quot;&gt;9/15&lt;/td&gt;&lt;td&gt;Assessor &amp;mdash; &lt;span class=&quot;ok&quot;&gt;APPROVED&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class=&quot;d&quot;&gt;10/6&lt;/td&gt;&lt;td&gt;Building (Dept. of Public Safety) &amp;mdash; &lt;span class=&quot;pending&quot;&gt;PENDING (27 days)&lt;/span&gt;&lt;br&gt;No deficiency &amp;bull; no required action &amp;bull; no reviewer date assigned&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;h2&gt;Comparison&lt;/h2&gt;
+&lt;div class=&quot;box&quot;&gt;&lt;span class=&quot;big&quot;&gt;This case: 27 days pending&lt;/span&gt; &amp;mdash; only 1 of 9 comparable
+public cases ran longer, and that one carried a documented deficiency. In the same weeks, the
+Board approved dozens of comparable parcel/survey matters.&lt;/div&gt;
+&lt;h2&gt;The question&lt;/h2&gt;
+&lt;p class=&quot;q&quot;&gt;&amp;ldquo;What specifically is outstanding in the Building review of BPS26-0517, who has
+the file, and when will a decision be made?&amp;rdquo;&lt;/p&gt;
+&lt;p class=&quot;foot&quot;&gt;Every line is verifiable in the City&#x27;s own records. Full analysis, data, and
+open-source code: github.com/nestorwheelock/city-data-sleuth&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+
+def main():
+    html_path = os.path.join(DOCS, &quot;summary.html&quot;)
+    pdf_path = os.path.join(DOCS, &quot;summary.pdf&quot;)
+    open(html_path, &quot;w&quot;).write(HTML)
+    subprocess.run([&quot;wkhtmltopdf&quot;, &quot;--enable-local-file-access&quot;, &quot;--page-size&quot;, &quot;Letter&quot;,
+                    html_path, pdf_path], check=True)
+    print(&quot;wrote&quot;, pdf_path)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></details><details><summary>src/test_bps_pipeline.py — 73 lines</summary><pre><code># SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
+&quot;&quot;&quot;Unit tests for bps_pipeline parsers.  Run:  python3 -m unittest -v&quot;&quot;&quot;
+import unittest
+import bps_pipeline as bp
+
+CONSOLIDATE = (&quot;306994 – BPS26-0279 – Request submitted by Michael Meehan to &quot;
+               &quot;consolidate lots 22 and 23 located at the property at 3316 Illinois Ave., &quot;
+               &quot;in C. B. 1528.&quot;)
+SUBDIVIDE = (&quot;306686 – BPS26-0028 – Request submitted by Starke Inc., to divide the &quot;
+             &quot;existing lot into 6 new parcels at 2740 Ellendale Ave., in C.B 4789.&quot;)
+BOUNDARY = (&quot;306542 – BPS25-0464 – Request by Second Patch, LLC for a boundary &quot;
+            &quot;adjustment reducing the rear of 1919 Hereford St., in C. B. 4081.&quot;)
+SPECIAL_EVENT = (&quot;306983 – BPS26-0196 – Beer Mile North American Classic will take &quot;
+                 &quot;place on July 11 from 2 pm to 11 pm on Manchester Avenue.&quot;)
+
+class TestClassify(unittest.TestCase):
+    def test_consolidation(self):
+        r = bp.classify(CONSOLIDATE)
+        self.assertIsNotNone(r)
+        self.assertEqual(r[&quot;item_no&quot;], &quot;306994&quot;)
+        self.assertEqual(r[&quot;bps_no&quot;], &quot;BPS26-0279&quot;)
+        self.assertEqual(r[&quot;type&quot;], &quot;consolidation&quot;)
+        self.assertEqual(r[&quot;applicant&quot;], &quot;Michael Meehan&quot;)
+        self.assertEqual(r[&quot;city_block&quot;], &quot;1528&quot;)
+        self.assertIn(&quot;3316 Illinois Ave&quot;, r[&quot;address&quot;])
+
+    def test_subdivision(self):
+        r = bp.classify(SUBDIVIDE)
+        self.assertEqual(r[&quot;type&quot;], &quot;subdivision&quot;)
+        self.assertEqual(r[&quot;bps_no&quot;], &quot;BPS26-0028&quot;)
+        self.assertEqual(r[&quot;applicant&quot;], &quot;Starke Inc.&quot;)
+        self.assertEqual(r[&quot;city_block&quot;], &quot;4789&quot;)
+
+    def test_boundary_adjustment(self):
+        r = bp.classify(BOUNDARY)
+        self.assertEqual(r[&quot;type&quot;], &quot;boundary adjustment&quot;)
+        self.assertEqual(r[&quot;applicant&quot;], &quot;Second Patch, LLC&quot;)
+        self.assertEqual(r[&quot;city_block&quot;], &quot;4081&quot;)
+
+    def test_non_parcel_returns_none(self):
+        self.assertIsNone(bp.classify(SPECIAL_EVENT))
+
+    def test_missing_case_number_returns_none(self):
+        self.assertIsNone(bp.classify(&quot;306999 – consolidate two lots somewhere.&quot;))
+
+class TestHelpers(unittest.TestCase):
+    def test_date_from_filename(self):
+        self.assertEqual(bp.date_from_filename(&quot;x/BPS-Minutes-June-9-2026-Approved.txt&quot;),
+                         &quot;2026-06-09&quot;)
+        self.assertEqual(bp.date_from_filename(&quot;BPS-Minutes-September-29-2026-Preliminary.txt&quot;),
+                         &quot;2026-09-29&quot;)
+
+    def test_version_from_filename(self):
+        self.assertEqual(bp.version_from_filename(&quot;BPS-Minutes-June-9-2026-Approved.txt&quot;),
+                         &quot;Approved&quot;)
+        self.assertEqual(bp.version_from_filename(&quot;BPS-Minutes-Sep-29-2026-Preliminary.txt&quot;),
+                         &quot;Preliminary&quot;)
+
+    def test_iter_item_blocks_splits_two(self):
+        text = CONSOLIDATE + &quot;\n\n&quot; + SUBDIVIDE
+        blocks = list(bp.iter_item_blocks(text))
+        self.assertEqual(len(blocks), 2)
+        self.assertEqual(blocks[0][0], &quot;306994&quot;)
+        self.assertEqual(blocks[1][0], &quot;306686&quot;)
+
+    def test_tuesdays_2026_count(self):
+        # 2026 has 52 Tuesdays
+        self.assertEqual(sum(1 for _ in bp.tuesdays(2026)), 52)
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main(verbosity=2)
+</code></pre></details><details><summary>data/turnaround-sample.csv</summary><pre><code>case,days,deficiency,pending,source,note
+BPS26-0185,3,0,0,case-check,approved
+BPS26-0004,5,0,0,case-check,approved
+BPS26-0174,8,0,0,case-check,approved
+BPS26-0121,14,0,0,case-check,board-denied (did not meet lot criteria)
+BPS26-0173,15,0,0,case-check,board-denied
+BPS26-0163,16,0,0,case-check,approved
+BPS25-0412,18,1,0,case-check,documented zoning objection
+BPS25-0622,24,1,0,case-check,discrepancy + revised plat
+BPS26-0026,29,1,0,case-check,substantially deficient; resubmissions
+BPS26-0517,27,0,1,case-check,SUBJECT — still pending, no decision
+</code></pre></details>
+<p class="note">Reproducibility: unit tests ship with the parsers; <code>verify</code> re-derives the
+roster from the minutes text and diffs it against the reviewed reference. Archived PDFs carry a
+SHA-256 manifest. Full repo: <a href="https://github.com/nestorwheelock/city-data-sleuth">https://github.com/nestorwheelock/city-data-sleuth</a>.</p></main>
+<footer><div class="foot-in">
+<span>Built from public records with open-source code.</span>
+<span><a href="https://github.com/nestorwheelock/city-data-sleuth">Source on GitHub</a></span>
+<span>Licensed GNU GPL v3</span><span>Not legal advice.</span>
+</div></footer></body></html>

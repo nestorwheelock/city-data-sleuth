@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Records requests — City Data Sleuth</title>
+<style>:root{--s:#fcfcfb;--pg:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;--grid:#e1e0d9;--base:#c3c2b7;--ser:#2a78d6;--crit:#d03b3b;}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--pg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
+header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--grid)}
+.nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand span{color:var(--ser)}
+.nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
+main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
+.hero{max-width:960px;margin:0 auto;padding:54px 20px 20px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.02em;margin:.1em 0}
+h2{font-size:23px;margin:1.9em 0 .5em;letter-spacing:-.01em}
+h3{font-size:18px;margin:1.4em 0 .4em}
+.lede{font-size:20px;color:var(--ink2);max-width:40em}
+.tiles{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.tile{flex:1 1 160px;background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:16px 18px}
+.tile .n{font-size:30px;font-weight:800;letter-spacing:-.02em} .tile .n.crit{color:var(--crit)}
+.tile .l{font-size:13px;color:var(--ink2);margin-top:2px}
+.card{background:var(--s);border:1px solid var(--grid);border-radius:12px;padding:18px 20px;margin:16px 0}
+.chart{width:100%;height:auto;font-family:system-ui,sans-serif}
+.step{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink2)}
+.step b{background:var(--s);border:1px solid var(--grid);border-radius:999px;padding:5px 12px;color:var(--ink)}
+.callout{border-left:4px solid var(--ser);background:var(--s);padding:12px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+.callout.crit{border-color:var(--crit)}
+blockquote{border-left:3px solid var(--base);margin:12px 0;padding:6px 16px;color:var(--ink2);background:var(--s);border-radius:0 8px 8px 0}
+ul,ol{padding-left:22px} li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{position:sticky;top:0;background:var(--s);cursor:pointer;white-space:nowrap}
+.wrap{max-height:520px;overflow:auto;border:1px solid var(--grid);border-radius:10px}
+.note{font-size:13px;color:var(--mut)}
+.btn{display:inline-block;background:var(--ser);color:#fff;padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px}
+.btn:hover{text-decoration:none;filter:brightness(.95)}
+input.filter{width:100%;padding:9px 12px;border:1px solid var(--grid);border-radius:8px;margin:0 0 10px;font-size:14px}
+details{margin:10px 0;border:1px solid var(--grid);border-radius:10px;background:var(--s);padding:4px 12px}
+summary{cursor:pointer;font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+pre{overflow:auto;background:#0b0b0b;color:#e6e6e6;padding:14px;border-radius:8px;
+ font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;max-height:620px}
+pre code{background:none;color:inherit;padding:0}
+code{background:#eee;padding:1px 5px;border-radius:4px;font-size:.92em}
+footer{border-top:1px solid var(--grid);margin-top:50px}
+.foot-in{max-width:960px;margin:0 auto;padding:22px 20px;color:var(--mut);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(max-width:560px){h1{font-size:30px}}
+</style></head><body>
+<header class="nav"><div class="nav-in"><a class="brand" href="index.html">City Data <span>Sleuth</span></a><a href="index.html" class="">Story</a><a href="case.html" class="">The case</a><a href="data.html" class="">The data</a><a href="exhibits.html" class="">Exhibits</a><a href="records-request.html" class="on">Records requests</a><a href="methods.html" class="">Methods &amp; code</a><a href="reuse.html" class="">Use it yourself</a></div></header>
+<main><article><h1>How to write a public-records request that is hard to dodge</h1>
+<p>Most requests fail not because the law is weak but because they ask for the wrong thing, in the wrong form, from the wrong custodian — and leave the agency room to hand back a thin, flattened subset. This is the method behind the case study on this site. It is general; swap in your own state&#x27;s open-records statute (examples cite the Missouri Sunshine Law, Chapter 610 RSMo).</p>
+<h2>Four principles</h2>
+<ol><li><strong>Ask for records, not answers.</strong> Open-records laws compel existing records and database</li></ol>
+<p>   fields — not new analysis. Never ask the agency to &quot;calculate the average&quot; or &quot;tell me    why.&quot; Ask for the rows; you do the math. Asking for analysis invites a lawful &quot;we don&#x27;t    create records&quot; refusal.</p>
+<ol><li><strong>Keep it neutral — don&#x27;t show your hand.</strong> The request should read as a records request</li></ol>
+<p>   about records, never as your theory of the case. Stating a grievance or an accusation    tells the agency what to be defensive about and what to route to its lawyers. Describe    the records; let them speak.</p>
+<ol><li><strong>Name the hidden layers.</strong> The public-facing screen is the tip. Below it sit the</li></ol>
+<p>   database, the audit log, and the metadata — and that is where the real timeline lives.    You have to name them specifically, because an agency answers what you asked, not what    you meant.</p>
+<ol><li><strong>Close the exits.</strong> Specify custodians, systems, identifiers, date ranges, format, and</li></ol>
+<p>   a withholding log. Every exit you leave open is one the record can slip through.</p>
+<h2>The three layers to request</h2>
+<h3>A. The data behind the screen</h3>
+<ul><li>The <strong>underlying database record</strong>, not a screenshot or PDF of the web view — every field</li></ul>
+<p>  the system stores for each record, <strong>including fields not displayed publicly</strong>.</p>
+<ul><li>The <strong>data dictionary / schema / field list</strong> (table layout, column names and</li></ul>
+<p>  definitions, and any lookup/code tables). *Request this explicitly — once you have the   field list, the agency cannot claim a field &quot;doesn&#x27;t exist.&quot;*</p>
+<ul><li>The <strong>mapping between the public form/portal fields and the database columns</strong> (which</li></ul>
+<p>  on-screen label corresponds to which stored field).</p>
+<ul><li>The <strong>audit / history / workflow log</strong>: the row-level event trail — for each record,</li></ul>
+<p>  every status change with its <strong>timestamp, the actor, the action, and old → new value</strong>,   plus <strong>assignment and reassignment</strong> events (who it was routed to, and when).</p>
+<h3>B. The communications</h3>
+<ul><li><strong>Email</strong> — with <strong>full headers</strong>, in native format (<code>.eml</code>/<code>.msg</code>), including messages</li></ul>
+<p>  <strong>among</strong> staff and <strong>across departments</strong>, not just the agency&#x27;s replies to you.</p>
+<ul><li><strong>Text / SMS messages</strong> about the public business — including those on **personal</li></ul>
+<p>  devices** where the business was conducted there (in many states these are public   records regardless of device).</p>
+<ul><li><strong>Chat / instant messaging</strong> (Teams, Slack, etc.), <strong>voicemail</strong>, and <strong>call logs</strong>.</li><li><strong>Inter-office memos, routing slips, and transmittal records.</strong></li><li><strong>Calendars and meeting records</strong> — invitations, agendas, minutes, or notes of any</li></ul>
+<p>  meeting where the matter was discussed.</p>
+<h3>C. The metadata most people never ask for</h3>
+<ul><li><strong>Native file formats with metadata intact</strong> — spreadsheets as <strong>CSV/XLSX</strong>, not PDF;</li></ul>
+<p>  documents in their original format. *Explicitly forbid &quot;flattening&quot; to PDF or printouts*,   which strips dates, authorship, and structure.</p>
+<ul><li><strong>System-generated metadata</strong>: created/modified timestamps, author/editor, document</li></ul>
+<p>  properties; image <strong>EXIF</strong>; email routing headers.</p>
+<ul><li><strong>The list of systems/applications</strong> the agency uses for this process (the permitting</li></ul>
+<p>  system and its vendor, the email system, chat, phone/SMS). You need this to know which   custodian and system to name.</p>
+<ul><li><strong>The records-retention schedule and records-management policy</strong> for these records — this</li></ul>
+<p>  tells you what <strong>must</strong> exist, so a &quot;no records&quot; answer can be tested against the   agency&#x27;s own retention rules.</p>
+<h2>Closing the exits (what makes it hard to wiggle out of)</h2>
+<ul><li><strong>Name the custodians and systems to search</strong> — each department and each application by</li></ul>
+<p>  name, not &quot;the City.&quot;</p>
+<ul><li><strong>Give exact identifiers and search terms</strong> — case numbers, addresses, parcel/locator</li></ul>
+<p>  IDs, and names — so the search is defined, not left to interpretation.</p>
+<ul><li><strong>Set explicit date ranges</strong> for each category.</li><li><strong>Demand native electronic format with metadata</strong>, and state that PDF printouts are not</li></ul>
+<p>  an acceptable substitute for data that exists in a database.</p>
+<ul><li><strong>Require a withholding log</strong>: for anything redacted or withheld, the specific record,</li></ul>
+<p>  the field, and the <strong>statutory basis</strong>, item by item (not a blanket citation).</p>
+<ul><li><strong>Ask them to state their search methodology</strong> — which systems were searched and with</li></ul>
+<p>  what terms. This converts a thin response into a documented one you can challenge.</p>
+<ul><li><strong>Request the data dictionary alongside the data</strong>, so field-level completeness is</li></ul>
+<p>  checkable.</p>
+<ul><li><strong>Fees</strong>: request an <strong>itemized estimate in advance</strong>, and a <strong>fee waiver</strong> where the use</li></ul>
+<p>  is in the public interest and non-commercial (discretionary in many states — make the   case).</p>
+<ul><li><strong>Cite the statute and the response deadline</strong> (Missouri: three business days under</li></ul>
+<p>  610.023; if more time is needed they must say when and why).</p>
+<ul><li><strong>Ask for rolling production</strong> — records that can be produced now, produced now; the rest</li></ul>
+<p>  to follow — so nothing waits on the slowest item.</p>
+<h2>Then do the analysis properly</h2>
+<ul><li><strong>Verify completeness</strong> against an independent public source (e.g., published board</li></ul>
+<p>  minutes or agendas) — if the agency&#x27;s export is missing cases the minutes show, you know   the response is incomplete.</p>
+<ul><li><strong>Load the native data</strong> into a spreadsheet or a small script; never eyeball a PDF.</li><li><strong>Compute the distribution</strong> (median, quartiles, range) and <strong>compare like-to-like</strong> —</li></ul>
+<p>  same record type, same stage — before calling anything an outlier.</p>
+<ul><li><strong>Preserve provenance</strong>: keep the originals and a checksum (e.g., SHA-256) so you can</li></ul>
+<p>  prove later that nothing was altered.</p>
+<h2>A neutral request skeleton</h2>
+<blockquote>Under [your state&#x27;s open-records statute], I request the following existing records. I am<br>requesting records and database fields, not asking you to create any new analysis. Where<br>records exist electronically, provide them in native electronic format with metadata<br>intact (CSV for tabular data; original messages with full headers) — not PDF printouts.<br>1. For [record type] from [date] to [date]: every field stored for each record, including<br>fields not displayed publicly; the data dictionary/field list; and the complete<br>audit/history log (timestamp, actor, action, old→new value; assignment/reassignment).<br>2. Communications concerning [identifiers] among [named custodians], [date] to [date]:<br>email (full headers), text/SMS (including personal devices used for this business),<br>chat, voicemail, call logs, routing slips, and meeting/calendar records.<br>3. The list of systems used for this process and the applicable records-retention<br>schedule.<br>Search terms: [case #, address, parcel ID, names]. Custodians: [departments/offices].<br>For anything withheld, identify the record and field and cite the statutory basis. Please<br>state which systems you searched and with what terms. Provide an itemized fee estimate in<br>advance; I request a fee waiver as the use is in the public interest and non-commercial.</blockquote>
+<p>Keep the tone administrative throughout. The strongest request asks only for records — and lets the records tell the story.</p>
+<p>*This is general guidance, not legal advice. For a specific dispute, consult a lawyer in your jurisdiction.*</p></article></main>
+<footer><div class="foot-in">
+<span>Built from public records with open-source code.</span>
+<span><a href="https://github.com/nestorwheelock/city-data-sleuth">Source on GitHub</a></span>
+<span>Licensed GNU GPL v3</span><span>Not legal advice.</span>
+</div></footer></body></html>

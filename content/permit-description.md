@@ -6,5 +6,7 @@
 > needles — it was known back then as "Little Ivanhoe."
 
 **In plain terms:** application BPS26-0517 asks to move about 525 square feet between two
-adjoining lots on Ivanhoe Avenue — a boundary adjustment, with no construction — so the old
-cut-through walkway is absorbed into the applicant's own parcel.
+adjoining lots **both owned by the same applicant** on Ivanhoe Avenue — a boundary adjustment
+between two parcels under common ownership, with no construction — so the old cut-through
+walkway is absorbed into the applicant's adjacent parcel. The adjustment is being completed
+in preparation for a sale of the property.

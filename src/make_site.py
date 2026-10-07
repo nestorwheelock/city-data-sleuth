@@ -10,7 +10,7 @@ Builds the public site from the analysis outputs and the content/ markdown.
 Reads  : data/parcel-survey-roster.csv, data/turnaround-sample.csv, content/*.md,
          content/assets/* (optional), src/*.py (shown on the methods page)
 Writes : docs/  (GitHub Pages root) — index, case, data, exhibits,
-         records-request, methods, reuse
+         methods, reuse
 No third-party dependencies.
 """
 from __future__ import annotations

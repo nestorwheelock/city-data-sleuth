@@ -326,8 +326,7 @@ private documents. This page shows the permit request and the public corresponde
 <h2>What the data can and cannot show</h2>
 <p>The minutes give <b>one date per case</b> (board approval), not the per-step review clock. Turnaround
 exists only on the public case pages; the sample here is small and non-random. The population-wide
-distribution requires the City's workflow timestamps — requested via public records (see
-the records-request process).</p>
+distribution requires the City's workflow timestamps — requested via public records.</p>
 <h2>The source code</h2>
 {''.join(blocks)}
 <p class="note">Reproducibility: unit tests ship with the parsers; <code>verify</code> re-derives the

@@ -64,8 +64,7 @@ footer{border-top:1px solid var(--grid);margin-top:50px}
 <h2>What the data can and cannot show</h2>
 <p>The minutes give <b>one date per case</b> (board approval), not the per-step review clock. Turnaround
 exists only on the public case pages; the sample here is small and non-random. The population-wide
-distribution requires the City's workflow timestamps — requested via public records (see
-the records-request process).</p>
+distribution requires the City's workflow timestamps — requested via public records.</p>
 <h2>The source code</h2>
 <details><summary>src/bps_pipeline.py — 305 lines</summary><pre><code>#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -371,7 +370,7 @@ def main(argv=None):
 
 if __name__ == &quot;__main__&quot;:
     main()
-</code></pre></details><details><summary>src/make_site.py — 344 lines</summary><pre><code>#!/usr/bin/env python3
+</code></pre></details><details><summary>src/make_site.py — 343 lines</summary><pre><code>#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # City Data Sleuth — multi-page static site generator.
 # Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
@@ -699,8 +698,7 @@ private documents. This page shows the permit request and the public corresponde
 &lt;h2&gt;What the data can and cannot show&lt;/h2&gt;
 &lt;p&gt;The minutes give &lt;b&gt;one date per case&lt;/b&gt; (board approval), not the per-step review clock. Turnaround
 exists only on the public case pages; the sample here is small and non-random. The population-wide
-distribution requires the City&#x27;s workflow timestamps — requested via public records (see
-the records-request process).&lt;/p&gt;
+distribution requires the City&#x27;s workflow timestamps — requested via public records.&lt;/p&gt;
 &lt;h2&gt;The source code&lt;/h2&gt;
 {&#x27;&#x27;.join(blocks)}
 &lt;p class=&quot;note&quot;&gt;Reproducibility: unit tests ship with the parsers; &lt;code&gt;verify&lt;/code&gt; re-derives the

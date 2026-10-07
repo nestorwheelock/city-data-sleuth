@@ -17,7 +17,7 @@ agendas or minutes, you can do exactly what the case study here does.
 4. **Verify** the automated extract against the published record for completeness.
 5. **Analyze** — compute the distribution, compare like-to-like, find the outliers.
 6. **Request what's missing** — the per-step timestamps and communications usually live in a
-   database you can only reach with a public-records request. See the records-request guide.
+   database you can only reach with a public-records request.
 
 ## The one rule
 Stay on the public side. Read what the government actually publishes; use the records

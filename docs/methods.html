@@ -1,6 +1,8 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Methods &amp; code — City Data Sleuth</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <style>:root{--s:#fcfcfb;--pg:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;--grid:#e1e0d9;--base:#c3c2b7;--ser:#2a78d6;--crit:#d03b3b;}
 *{box-sizing:border-box} html{scroll-behavior:smooth}
 body{margin:0;background:var(--pg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -8,7 +10,8 @@ a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
 header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
  border-bottom:1px solid var(--grid)}
 .nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
-.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink);display:flex;align-items:center;gap:9px}
+.logo{height:32px;width:32px;flex:none}
 .brand span{color:var(--ser)}
 .nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
 main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
@@ -47,7 +50,7 @@ footer{border-top:1px solid var(--grid);margin-top:50px}
 .foot-in{max-width:960px;margin:0 auto;padding:22px 20px;color:var(--mut);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px}
 @media(max-width:560px){h1{font-size:30px}}
 </style></head><body>
-<header class="nav"><div class="nav-in"><a class="brand" href="index.html">City Data <span>Sleuth</span></a><a href="index.html" class="">Story</a><a href="case.html" class="">The case</a><a href="data.html" class="">The data</a><a href="exhibits.html" class="">Exhibits</a><a href="records-request.html" class="">Records requests</a><a href="methods.html" class="on">Methods &amp; code</a><a href="reuse.html" class="">Use it yourself</a></div></header>
+<header class="nav"><div class="nav-in"><a class="brand" href="index.html"><img class="logo" src="assets/logo.svg" alt="">City Data <span>Sleuth</span></a><a href="index.html" class="">Story</a><a href="case.html" class="">The case</a><a href="data.html" class="">The data</a><a href="exhibits.html" class="">Exhibits</a><a href="methods.html" class="on">Methods &amp; code</a><a href="reuse.html" class="">Use it yourself</a></div></header>
 <main><h1>Methods &amp; code</h1>
 <p>Everything that produced this site, released under the GNU GPL v3. Copy it, run it, check it.</p>
 <h2>Pipeline</h2>
@@ -62,7 +65,7 @@ footer{border-top:1px solid var(--grid);margin-top:50px}
 <p>The minutes give <b>one date per case</b> (board approval), not the per-step review clock. Turnaround
 exists only on the public case pages; the sample here is small and non-random. The population-wide
 distribution requires the City's workflow timestamps — requested via public records (see
-<a href="records-request.html">the guide</a>).</p>
+the records-request process).</p>
 <h2>The source code</h2>
 <details><summary>src/bps_pipeline.py — 305 lines</summary><pre><code>#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -368,7 +371,7 @@ def main(argv=None):
 
 if __name__ == &quot;__main__&quot;:
     main()
-</code></pre></details><details><summary>src/make_site.py — 345 lines</summary><pre><code>#!/usr/bin/env python3
+</code></pre></details><details><summary>src/make_site.py — 344 lines</summary><pre><code>#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # City Data Sleuth — multi-page static site generator.
 # Copyright (C) 2026  Nestor Wheelock.  Licensed under the GNU GPL v3 or later.
@@ -397,7 +400,7 @@ BRAND   = &quot;City Data Sleuth&quot;
 PAL     = bp.PAL
 
 NAV = [(&quot;index.html&quot;,&quot;Story&quot;), (&quot;case.html&quot;,&quot;The case&quot;), (&quot;data.html&quot;,&quot;The data&quot;),
-       (&quot;exhibits.html&quot;,&quot;Exhibits&quot;), (&quot;records-request.html&quot;,&quot;Records requests&quot;),
+       (&quot;exhibits.html&quot;,&quot;Exhibits&quot;),
        (&quot;methods.html&quot;,&quot;Methods &amp; code&quot;), (&quot;reuse.html&quot;,&quot;Use it yourself&quot;)]
 
 def e(s): return html.escape(str(s if s is not None else &quot;&quot;))
@@ -484,7 +487,8 @@ a{color:var(--ser);text-decoration:none} a:hover{text-decoration:underline}
 header.nav{position:sticky;top:0;z-index:5;background:rgba(252,252,251,.92);backdrop-filter:blur(8px);
  border-bottom:1px solid var(--grid)}
 .nav-in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:12px 20px}
-.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink)}
+.brand{font-weight:800;letter-spacing:-.01em;margin-right:auto;font-size:18px;color:var(--ink);display:flex;align-items:center;gap:9px}
+.logo{height:32px;width:32px;flex:none}
 .brand span{color:var(--ser)}
 .nav a{color:var(--ink2);font-size:14px;padding:4px 0} .nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ser)}
 main{max-width:860px;margin:0 auto;padding:30px 20px 80px}
@@ -532,8 +536,10 @@ def shell(title, active, body, hero=None):
     return f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
 &lt;title&gt;{e(title)} — {BRAND}&lt;/title&gt;
+&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot;&gt;
+&lt;link rel=&quot;icon&quot; type=&quot;image/svg+xml&quot; href=&quot;assets/logo.svg&quot;&gt;
 &lt;style&gt;{VARS}{CSS}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
-&lt;header class=&quot;nav&quot;&gt;&lt;div class=&quot;nav-in&quot;&gt;&lt;a class=&quot;brand&quot; href=&quot;index.html&quot;&gt;City Data &lt;span&gt;Sleuth&lt;/span&gt;&lt;/a&gt;{nav}&lt;/div&gt;&lt;/header&gt;
+&lt;header class=&quot;nav&quot;&gt;&lt;div class=&quot;nav-in&quot;&gt;&lt;a class=&quot;brand&quot; href=&quot;index.html&quot;&gt;&lt;img class=&quot;logo&quot; src=&quot;assets/logo.svg&quot; alt=&quot;&quot;&gt;City Data &lt;span&gt;Sleuth&lt;/span&gt;&lt;/a&gt;{nav}&lt;/div&gt;&lt;/header&gt;
 {hero_html}&lt;main&gt;{body}&lt;/main&gt;
 &lt;footer&gt;&lt;div class=&quot;foot-in&quot;&gt;
 &lt;span&gt;Built from public records with open-source code.&lt;/span&gt;
@@ -654,19 +660,15 @@ document.querySelectorAll(&#x27;#t th&#x27;).forEach((th,i)=&gt;th.onclick=()=&g
                 &#x27;To include it, drop the image at &lt;code&gt;content/assets/plat.png&lt;/code&gt; and rebuild.&lt;/div&gt;&#x27;)
     ex_body = f&quot;&quot;&quot;&lt;h1&gt;Exhibits&lt;/h1&gt;
 &lt;p class=&quot;note&quot;&gt;Deliberately excluded: ownership records, deeds, purchase contracts, and other
-private documents. This page shows the permit request, the public correspondence, and the survey exhibit only.&lt;/p&gt;
+private documents. This page shows the permit request and the public correspondence only.&lt;/p&gt;
 &lt;section&gt;{read_md(&quot;permit-description.md&quot;)}&lt;/section&gt;
-&lt;h2&gt;The survey plat&lt;/h2&gt;
-&lt;div class=&quot;card&quot;&gt;{plat}&lt;/div&gt;
 &lt;section&gt;{read_md(&quot;alderman-email-chain.md&quot;)}&lt;/section&gt;
 &lt;h2&gt;One-page summary&lt;/h2&gt;
 &lt;p&gt;A printable summary of the case and the comparison. &lt;a class=&quot;btn&quot; href=&quot;summary.pdf&quot;&gt;Download PDF&lt;/a&gt;
 &lt;span class=&quot;note&quot;&gt;(generated by &lt;code&gt;src/make_pdf.py&lt;/code&gt;)&lt;/span&gt;&lt;/p&gt;&quot;&quot;&quot;
     write(&quot;exhibits.html&quot;, shell(&quot;Exhibits&quot;, &quot;exhibits.html&quot;, ex_body))
 
-    # ---- records-request guide
-    write(&quot;records-request.html&quot;, shell(&quot;Records requests&quot;, &quot;records-request.html&quot;,
-          f&#x27;&lt;article&gt;{read_md(&quot;records-request-guide.md&quot;)}&lt;/article&gt;&#x27;))
+    # records-request page intentionally not published
 
     # ---- reuse
     write(&quot;reuse.html&quot;, shell(&quot;Use it yourself&quot;, &quot;reuse.html&quot;,
@@ -698,7 +700,7 @@ private documents. This page shows the permit request, the public correspondence
 &lt;p&gt;The minutes give &lt;b&gt;one date per case&lt;/b&gt; (board approval), not the per-step review clock. Turnaround
 exists only on the public case pages; the sample here is small and non-random. The population-wide
 distribution requires the City&#x27;s workflow timestamps — requested via public records (see
-&lt;a href=&quot;records-request.html&quot;&gt;the guide&lt;/a&gt;).&lt;/p&gt;
+the records-request process).&lt;/p&gt;
 &lt;h2&gt;The source code&lt;/h2&gt;
 {&#x27;&#x27;.join(blocks)}
 &lt;p class=&quot;note&quot;&gt;Reproducibility: unit tests ship with the parsers; &lt;code&gt;verify&lt;/code&gt; re-derives the

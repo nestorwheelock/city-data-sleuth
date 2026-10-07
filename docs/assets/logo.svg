@@ -1,0 +1,58 @@
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="City Data Sleuth logo: a robotic dog with a magnifying glass over a city on a laptop">
+  <defs>
+    <clipPath id="lens"><circle cx="82" cy="70" r="15"/></clipPath>
+  </defs>
+
+  <!-- laptop base -->
+  <path d="M20 98 h88 l10 15 H10 z" fill="#0b0b0b"/>
+  <path d="M27 100 h74 l5 9 H22 z" fill="#3a3a38"/>
+  <!-- laptop screen -->
+  <rect x="30" y="52" width="68" height="48" rx="5" fill="#0b0b0b"/>
+  <rect x="34" y="56" width="60" height="40" rx="3" fill="#12243a"/>
+  <!-- city skyline inside the screen -->
+  <rect x="39" y="80" width="7" height="12" fill="#3987e5"/>
+  <rect x="48" y="72" width="8" height="20" fill="#86b6ef"/>
+  <rect x="58" y="76" width="6" height="16" fill="#3987e5"/>
+  <rect x="66" y="66" width="9" height="26" fill="#86b6ef"/>
+  <rect x="77" y="82" width="7" height="10" fill="#3987e5"/>
+  <g fill="#cde2fb">
+    <rect x="50" y="75" width="1.6" height="1.6"/><rect x="53" y="75" width="1.6" height="1.6"/>
+    <rect x="68" y="70" width="1.6" height="1.6"/><rect x="71" y="70" width="1.6" height="1.6"/>
+    <rect x="68" y="74" width="1.6" height="1.6"/><rect x="71" y="74" width="1.6" height="1.6"/>
+  </g>
+
+  <!-- magnifying glass over the city -->
+  <circle cx="82" cy="70" r="15" fill="#cde2fb" opacity="0.35"/>
+  <g clip-path="url(#lens)"><rect x="78" y="58" width="9" height="20" fill="#2a78d6"/></g>
+  <circle cx="82" cy="70" r="15" fill="none" stroke="#0b0b0b" stroke-width="4"/>
+  <circle cx="82" cy="70" r="12.5" fill="none" stroke="#2a78d6" stroke-width="1.6"/>
+  <line x1="92.5" y1="80.5" x2="104" y2="92" stroke="#0b0b0b" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- ROBOTIC dog peeking over the laptop -->
+  <g>
+    <!-- antenna -->
+    <line x1="38" y1="26" x2="38" y2="15" stroke="#6b7480" stroke-width="2"/>
+    <circle cx="38" cy="13" r="3.2" fill="#2a78d6"/>
+    <circle cx="38" cy="13" r="1.3" fill="#cde2fb"/>
+    <!-- angular metal ears (hinged panels) -->
+    <polygon points="22,32 29,28 29,46 22,43" fill="#7c858f"/>
+    <polygon points="54,32 47,28 47,46 54,43" fill="#7c858f"/>
+    <circle cx="27" cy="36" r="1.5" fill="#4d555d"/><circle cx="49" cy="36" r="1.5" fill="#4d555d"/>
+    <!-- head plate -->
+    <rect x="26" y="28" width="24" height="25" rx="5" fill="#aeb6bf"/>
+    <rect x="26" y="28" width="24" height="6" rx="3" fill="#9aa3ad"/>
+    <line x1="38" y1="28" x2="38" y2="34" stroke="#8892" stroke-width="1"/>
+    <!-- visor with glowing optical sensors -->
+    <rect x="29" y="35" width="18" height="8" rx="2.5" fill="#1b2430"/>
+    <circle cx="34" cy="39" r="2.5" fill="#3987e5"/><circle cx="34" cy="39" r="1" fill="#cde2fb"/>
+    <circle cx="42" cy="39" r="2.5" fill="#3987e5"/><circle cx="42" cy="39" r="1" fill="#cde2fb"/>
+    <!-- metal muzzle with grille + nose sensor -->
+    <rect x="31" y="46" width="14" height="8" rx="2" fill="#8d969f"/>
+    <line x1="35" y1="47" x2="35" y2="53" stroke="#5c646d" stroke-width="1"/>
+    <line x1="38" y1="47" x2="38" y2="53" stroke="#5c646d" stroke-width="1"/>
+    <line x1="41" y1="47" x2="41" y2="53" stroke="#5c646d" stroke-width="1"/>
+    <circle cx="38" cy="46.5" r="1.8" fill="#2a78d6"/>
+    <!-- corner rivets -->
+    <circle cx="29" cy="31" r="1.2" fill="#6b7480"/><circle cx="47" cy="31" r="1.2" fill="#6b7480"/>
+  </g>
+</svg>
